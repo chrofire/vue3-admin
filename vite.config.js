@@ -13,25 +13,19 @@ export default defineConfig({
         vue(),
         vueJsx(),
         AutoImport({
-            resolvers: [ElementPlusResolver({
-                importStyle: 'sass',
-                directives: true
-            })]
+            resolvers: [ElementPlusResolver()]
         }),
         Components({
-            resolvers: [ElementPlusResolver({
-                importStyle: 'sass',
-                directives: true
-            })]
+            resolvers: [ElementPlusResolver()]
         })
     ],
-    css: {
-        preprocessorOptions: {
-            scss: {
-                additionalData: `@use "@/styles/element-preset.scss" as *;`
-            }
-        }
-    },
+    // css: {
+    //     preprocessorOptions: {
+    //         scss: {
+    //             additionalData: `@use "@/styles/element-preset.scss" as *;`
+    //         }
+    //     }
+    // },
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url))
