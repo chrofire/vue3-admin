@@ -10,6 +10,9 @@ const app = createApp(App)
 app.use(pinia)
 app.use(router)
 
+import { catchErrorMessage } from '@/utils/message'
+window.catchErrorMessage = catchErrorMessage
+
 app.config.globalProperties.console = window.console
 
 app.mount('#app')

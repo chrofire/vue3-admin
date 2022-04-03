@@ -10,7 +10,14 @@ const router = createRouter({
         {
             path: '/layout',
             name: 'Layout',
-            component: () => import('@/layout/index.vue')
+            component: () => import('@/layout/index.vue'),
+            children: [
+                {
+                    path: 'dept',
+                    name: 'Dept',
+                    component: () => import('@/views/system/dept/index.vue')
+                }
+            ]
         }
     ]
 })
