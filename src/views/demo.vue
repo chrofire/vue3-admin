@@ -4,15 +4,40 @@
             <template #templateInput="{ formItem, formData }">
                 <el-input v-model="formData[formItem.prop]"></el-input>
             </template>
+            <template #templateTreeSelect="{ formItem, formData }">
+                <BasicTreeSelect
+                    v-model="formData[formItem.prop]"
+                    ref="templateTreeSelectRef"
+                    :data="formItem.extra.data"
+                    :props="{
+                        children: 'children',
+                        label: 'label'
+                    }"
+                    :clearable="true"
+                    :highlight-current="true"
+                    node-key="value"
+                    :expand-on-click-node="false"
+                    @node-click="data => {
+                        // 修改表单值
+                        formData[formItem.prop] = data.value
+                        // 修改输入框值
+                        templateTreeSelectRef.state.inputVal = data.label
+                    }"
+                ></BasicTreeSelect>
+            </template>
         </BasicForm>
         <el-button type="primary" @click="validateFunc">validate</el-button>
-        <el-button type="primary" @click="resetFields()">resetFields</el-button>
+        <el-button type="primary" @click="resetFieldsFunc">resetFields</el-button>
         <el-button type="primary" @click="() => console.log(getFormData())">getFormData</el-button>
     </div>
 </template>
 
 <script lang="jsx" setup>
 import BasicForm, { useForm } from '@/components/BasicForm/index.vue'
+import BasicTreeSelect from '@/components/BasicTreeSelect/index.vue'
+import { ref, unref } from 'vue'
+
+const templateTreeSelectRef = ref(null)
 
 const [registerForm, {
     componentProps: formProps,
@@ -166,6 +191,31 @@ const [registerForm, {
             col: {
                 span: 12
             }
+        },
+        {
+            prop: 'templateTreeSelect',
+            label: 'templateTreeSelect',
+            labelWidth: '145px',
+            rules: [
+                { required: true, message: 'templateTreeSelect不能为空', trigger: 'change' }
+            ],
+            col: {
+                span: 12
+            },
+            extra: {
+                data: Array.from({ length: 3 }, (_, i) => {
+                    return {
+                        value: `value${i}`,
+                        label: `label${i}`,
+                        children: Array.from({ length: 6 }, (_, j) => {
+                            return {
+                                value: `value${i}-${j}`,
+                                label: `label${i}-${j}`
+                            }
+                        })
+                    }
+                })
+            }
         }
     ],
     modelValue: {}
@@ -174,6 +224,11 @@ const [registerForm, {
 const validateFunc = async () => {
     const res = await validate()
     console.log(res)
+}
+
+const resetFieldsFunc = () => {
+    resetFields()
+    unref(templateTreeSelectRef).resetField()
 }
 
 </script>

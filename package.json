@@ -11,6 +11,7 @@
         "lint:style": "stylelint **/*.{vue,css,sass,scss} --fix"
     },
     "dependencies": {
+        "@element-plus/icons-vue": "^1.1.4",
         "@vueuse/core": "^8.2.2",
         "dayjs": "^1.11.0",
         "element-plus": "^2.1.7",
