@@ -41,7 +41,15 @@
 import BasicForm, { useForm } from '@/components/BasicForm/index.vue'
 import BasicTreeSelect from '@/components/BasicTreeSelect/index.vue'
 import { useLoading } from '@/hooks/useLoading.js'
+import useApi from '@/api'
 import { ref, unref } from 'vue'
+
+const api = useApi()
+console.log(api)
+const api3_1 = api.module1.module3.api3_1()
+console.log(api3_1)
+const api3_2 = useApi('module1.module3.api3_2')()
+console.log(api3_2)
 
 const templateTreeSelectRef = ref(null)
 
