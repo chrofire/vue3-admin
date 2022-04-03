@@ -26,18 +26,27 @@
                 ></BasicTreeSelect>
             </template>
         </BasicForm>
+        <div class="loading-container" style="height: 200px;" ref="loadingContainer">
+            content
+        </div>
         <el-button type="primary" @click="validateFunc">validate</el-button>
         <el-button type="primary" @click="resetFieldsFunc">resetFields</el-button>
         <el-button type="primary" @click="() => console.log(getFormData())">getFormData</el-button>
+        <el-button type="primary" @click="startLoading">startLoading</el-button>
+        <el-button type="primary" @click="stopLoading">stopLoading</el-button>
     </div>
 </template>
 
 <script lang="jsx" setup>
 import BasicForm, { useForm } from '@/components/BasicForm/index.vue'
 import BasicTreeSelect from '@/components/BasicTreeSelect/index.vue'
+import { useLoading } from '@/hooks/useLoading.js'
 import { ref, unref } from 'vue'
 
 const templateTreeSelectRef = ref(null)
+
+const loadingContainer = ref(null)
+const { start: startLoading, stop: stopLoading } = useLoading({ target: loadingContainer })
 
 const [registerForm, {
     componentProps: formProps,
