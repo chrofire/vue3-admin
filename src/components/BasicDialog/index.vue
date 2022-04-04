@@ -2,6 +2,7 @@
 import { ElButton, ElDialog } from 'element-plus'
 import { defineComponent, h, reactive, ref } from 'vue'
 export { useDialog } from './useDialog'
+
 export default defineComponent({
     name: 'BasicDialog',
     inheritAttrs: false,

@@ -77,7 +77,11 @@ const [
         {
             prop: 'name',
             label: '部门名称',
-            rules: [{ required: true, message: '部门名称不能为空', trigger: 'blur' }],
+            rules: [
+                { required: true, message: '部门名称不能为空', trigger: 'blur' },
+                { min: 3, message: '部门名称长度最短3个字符', trigger: 'blur' },
+                { max: 20, message: '部门名称长度最长20个字符', trigger: 'blur' }
+            ],
             render: {
                 component: 'el-input'
             }

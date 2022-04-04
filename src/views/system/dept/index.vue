@@ -1,5 +1,8 @@
 <template>
     <div class="main-container">
+        <div class="search-container">
+            <BasicForm @register="registerSearchForm" v-bind="searchFormProps"></BasicForm>
+        </div>
         <div class="operate-list">
             <el-button type="primary" @click="DeptContentDialogRef.openDialog('add')">
                 新增
@@ -29,6 +32,7 @@ export default {
 
 <script lang="jsx" setup>
 import BasicTable, { useTable } from '@/components/BasicTable/index.vue'
+import BasicForm, { useForm } from '@/components/BasicForm/index.vue'
 import DeptContentDialog from './DeptContentDialog.vue'
 import { onMounted, reactive, ref, unref } from 'vue'
 import useApi from '@/api'
@@ -47,6 +51,63 @@ const tableContainer = ref(null)
 const DeptContentDialogRef = ref(null)
 
 const loading = useLoading({ target: tableContainer })
+
+const [
+    registerSearchForm,
+    {
+        componentProps: searchFormProps,
+        getFormData: getSearchFormData,
+        resetFields: searchFormResetFields
+    }
+] = useForm({
+    labelWidth: '70px',
+    schema: [
+        {
+            prop: 'name',
+            label: '部门名称',
+            col: {
+                span: 8
+            },
+            render: {
+                component: 'el-input',
+                props: {
+                    clearable: true
+                }
+            }
+        },
+        {
+            prop: 'state',
+            label: '状态',
+            col: {
+                span: 8
+            },
+            render: {
+                component: 'el-select',
+                props: {
+                    clearable: true,
+                    style: { width: '100%' }
+                },
+                options: [...stateMap.values()]
+            }
+        },
+        {
+            prop: '_operate',
+            labelWidth: '0px',
+            col: {
+                span: 8
+            },
+            render: ({ formItem, formData }) => {
+                return (
+                    <div class="btn-list">
+                        <el-button type="primary" onClick={() => getDataList()}>查询</el-button>
+                        <el-button onClick={() => searchFormResetFields()}>重置</el-button>
+                    </div>
+                )
+            }
+        }
+    ],
+    modelValue: {}
+})
 
 const [registerTable, { componentProps: tableProps }] = useTable({
     autoHeight: true,
@@ -106,7 +167,9 @@ const [registerTable, { componentProps: tableProps }] = useTable({
 const getDataList = async () => {
     loading.start()
     try {
-        const params = {}
+        const params = {
+            ...getSearchFormData()
+        }
         const { list } = await api.system.dept.list(params)
         const sortList = list.sort((a, b) => a.order - b.order)
         state.deptList = sortList.map(item => {

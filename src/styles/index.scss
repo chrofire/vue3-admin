@@ -15,3 +15,17 @@ body,
     padding: 15px;
     background-color: rgba(240, 242, 245, 1);
 }
+.search-container {
+    background-color: #fff;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    .btn-list {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+    }
+}
+.operate-list {
+    background-color: #fff;
+    padding: 6px 12px;
+}

@@ -2,6 +2,7 @@
 import { defineComponent, h, mergeProps, nextTick, onBeforeUnmount, ref, unref, watch } from 'vue'
 import { ElTable, ElTableColumn } from 'element-plus'
 export { useTable } from './useTable'
+
 export default defineComponent({
     name: 'BasicTable',
     inheritAttrs: false,

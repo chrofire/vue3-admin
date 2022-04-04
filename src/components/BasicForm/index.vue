@@ -337,7 +337,6 @@ export default defineComponent({
                 {
                     ref: formRef,
                     model: unref(formData),
-                    size: 'default',
                     labelWidth: '100px',
                     ...attrs
                 },
