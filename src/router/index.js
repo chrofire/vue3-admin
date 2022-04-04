@@ -16,6 +16,11 @@ const router = createRouter({
                     path: 'dept',
                     name: 'Dept',
                     component: () => import('@/views/system/dept/index.vue')
+                },
+                {
+                    path: 'role',
+                    name: 'Role',
+                    component: () => import('@/views/system/role/index.vue')
                 }
             ]
         }
