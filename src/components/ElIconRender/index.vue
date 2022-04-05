@@ -16,8 +16,7 @@ export default {
             type: Number
         },
         color: {
-            type: String,
-            default: `#000`
+            type: String
         }
     },
     setup () {

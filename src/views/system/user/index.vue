@@ -1,31 +1,33 @@
 <template>
     <div class="main-container">
-        <div class="search-container">
-            <BasicForm @register="registerSearchForm" v-bind="searchFormProps"></BasicForm>
+        <div class="left-container">
+            <DeptTree ref="DeptTreeRef" @nodeChange="getDataList"></DeptTree>
         </div>
-        <div class="operate-list">
-            <el-button type="primary" @click="UserContentDialogRef.openDialog('add')">
-                新增
-            </el-button>
-            <el-button type="primary" @click="getDataList">刷新</el-button>
+        <div class="right-container">
+            <div class="search-container">
+                <BasicForm @register="registerSearchForm" v-bind="searchFormProps"></BasicForm>
+            </div>
+            <div class="operate-list">
+                <el-button type="primary" @click="UserContentDialogRef.openDialog('add')">
+                    新增
+                </el-button>
+                <el-button type="primary" @click="getDataList">刷新</el-button>
+            </div>
+            <div class="table-container" ref="tableContainer">
+                <BasicTable
+                    ref="BasicTableRef"
+                    @register="registerTable"
+                    v-bind="tableProps"
+                ></BasicTable>
+            </div>
+            <div class="pagination-container">
+                <BasicPagination
+                    :pagination="tableProps.pagination"
+                    @paginationChange="getDataList"
+                ></BasicPagination>
+            </div>
         </div>
-        <div class="table-container" ref="tableContainer">
-            <BasicTable
-                ref="BasicTableRef"
-                @register="registerTable"
-                v-bind="tableProps"
-            ></BasicTable>
-        </div>
-        <div class="pagination-container">
-            <BasicPagination
-                :pagination="tableProps.pagination"
-                @paginationChange="getDataList"
-            ></BasicPagination>
-        </div>
-        <UserContentDialog
-            ref="UserContentDialogRef"
-            @submit="getDataList"
-        ></UserContentDialog>
+        <UserContentDialog ref="UserContentDialogRef" @submit="getDataList"></UserContentDialog>
     </div>
 </template>
 
@@ -40,15 +42,17 @@ import BasicTable, { useTable } from '@/components/BasicTable/index.vue'
 import BasicPagination from '@/components/BasicPagination/index.vue'
 import BasicForm, { useForm } from '@/components/BasicForm/index.vue'
 import UserContentDialog from './UserContentDialog.vue'
-import { onMounted, ref, unref } from 'vue'
+import { ref, unref } from 'vue'
 import useApi from '@/api'
 import { useLoading } from '@/hooks/useLoading'
 import { stateMap } from './const'
+import DeptTree from './DeptTree.vue'
 
 const api = useApi()
 
 const tableContainer = ref(null)
 const UserContentDialogRef = ref(null)
+const DeptTreeRef = ref(null)
 
 const loading = useLoading({ target: tableContainer })
 
@@ -112,7 +116,9 @@ const [
             render: ({ formItem, formData }) => {
                 return (
                     <div class="btn-list">
-                        <el-button type="primary" onClick={() => getDataList()}>查询</el-button>
+                        <el-button type="primary" onClick={() => getDataList()}>
+                            查询
+                        </el-button>
                         <el-button onClick={() => searchFormResetFields()}>重置</el-button>
                     </div>
                 )
@@ -185,7 +191,11 @@ const [registerTable, { componentProps: tableProps }] = useTable({
 const getDataList = async () => {
     loading.start()
     try {
+        const deptId = unref(DeptTreeRef).state.currentNode
+            ? unref(DeptTreeRef).state.currentNode.id
+            : undefined
         const params = {
+            deptId,
             ...tableProps.pagination,
             ...getSearchFormData()
         }
@@ -198,10 +208,6 @@ const getDataList = async () => {
         loading.stop()
     }
 }
-
-onMounted(() => {
-    getDataList()
-})
 
 const deleteData = async payload => {
     try {
@@ -223,17 +229,26 @@ const deleteData = async payload => {
 <style lang="scss" scoped>
 .main-container {
     display: flex;
-    flex-flow: column nowrap;
-    .table-container {
-        flex: 1 0;
-        min-height: 0;
+    .left-container {
+        width: 200px;
+        margin-right: 10px;
     }
-    .pagination-container {
+    .right-container {
+        flex: 1 0;
+        min-width: 0;
         display: flex;
-        justify-content: flex-end;
-        background-color: #fff;
-        padding: 6px;
-        margin-top: 6px;
+        flex-flow: column nowrap;
+        .table-container {
+            flex: 1 0;
+            min-height: 0;
+        }
+        .pagination-container {
+            display: flex;
+            justify-content: flex-end;
+            background-color: #fff;
+            padding: 6px;
+            margin-top: 6px;
+        }
     }
 }
 </style>
