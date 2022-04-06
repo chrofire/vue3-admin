@@ -1,22 +1,46 @@
 <template>
     <BasicDialog @register="registerDialog" v-bind="dialogProps">
-        <BasicForm @register="registerForm" v-bind="formProps"></BasicForm>
+        <BasicForm @register="registerForm" v-bind="formProps">
+            <template #menu>
+                <el-tree
+                    v-loading="state.menuTreeLoading"
+                    ref="menuTreeRef"
+                    :data="state.menuTreeList"
+                    :props="{
+                        children: 'children',
+                        label: 'name'
+                    }"
+                    node-key="id"
+                    :show-checkbox="true"
+                    :default-expand-all="true"
+                    :check-strictly="false"
+                    :expand-on-click-node="false"
+                    :check-on-click-node="true"
+                    style="width: 100%;"
+                ></el-tree>
+            </template>
+        </BasicForm>
     </BasicDialog>
 </template>
 
 <script setup>
 import BasicDialog, { useDialog } from '@/components/BasicDialog/index.vue'
 import BasicForm, { useForm } from '@/components/BasicForm/index.vue'
-import { nextTick, reactive } from 'vue'
+import { nextTick, reactive, ref, unref } from 'vue'
 import useApi from '@/api'
 import { stateMap } from './const'
+import { listToTree } from '@/utils/tree'
 
 const api = useApi()
 
 const emit = defineEmits(['submit'])
 
+const menuTreeRef = ref(null)
+
 const state = reactive({
-    operationType: null
+    operationType: null,
+    menuTreeLoading: false,
+    menuTreeList: []
 })
 
 const [registerDialog, { componentProps: dialogProps, setVisible: setDialogVisible }] = useDialog({
@@ -71,6 +95,10 @@ const [
             render: {
                 component: 'el-input'
             }
+        },
+        {
+            prop: 'menu',
+            label: '菜单权限'
         }
     ],
     modelValue: {}
@@ -80,6 +108,7 @@ const openDialog = async (type, payload) => {
     state.operationType = type
     setDialogVisible(true)
     await nextTick()
+    await getMenuList()
     switch (type) {
         case 'add':
             Object.assign(dialogProps, {
@@ -91,6 +120,12 @@ const openDialog = async (type, payload) => {
                 title: '编辑角色'
             })
             setFormData({ ...payload })
+            payload.menus.forEach(item => {
+                const node = unref(menuTreeRef).getNode(item)
+                if (node && node.isLeaf) {
+                    unref(menuTreeRef).setChecked(node, true)
+                }
+            })
             break
         default:
             break
@@ -98,16 +133,20 @@ const openDialog = async (type, payload) => {
 }
 
 const confirmDialog = async () => {
+    const checkedId = unref(menuTreeRef).getCheckedKeys()
+    const halfId = unref(menuTreeRef).getHalfCheckedKeys()
+    const menuIdList = [...checkedId, ...halfId]
+
     const { valid } = await validate()
     if (!valid) return
     try {
         switch (state.operationType) {
             case 'add':
-                await api.system.role.addData(getFormData())
+                await api.system.role.addData({ ...getFormData(), menuIdList })
                 ElMessage.success('添加成功')
                 break
             case 'update':
-                await api.system.role.updateData(getFormData())
+                await api.system.role.updateData({ ...getFormData(), menuIdList })
                 ElMessage.success('修改成功')
                 break
             default:
@@ -123,6 +162,21 @@ const confirmDialog = async () => {
 const resetData = () => {
     state.operationType = null
     resetFields()
+    state.menuTreeList = []
+}
+
+const getMenuList = async () => {
+    try {
+        state.menuTreeLoading = true
+        const params = {}
+        const { list } = await api.system.menu.list(params)
+        const tree = listToTree(list)
+        state.menuTreeList = tree
+    } catch (error) {
+        catchErrorMessage(error)
+    } finally {
+        state.menuTreeLoading = false
+    }
 }
 
 defineExpose({
