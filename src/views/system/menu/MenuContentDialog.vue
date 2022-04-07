@@ -28,7 +28,7 @@
     </BasicDialog>
 </template>
 
-<script setup>
+<script lang="jsx" setup>
 import BasicDialog, { useDialog } from '@/components/BasicDialog/index.vue'
 import BasicForm, { useForm } from '@/components/BasicForm/index.vue'
 import BasicTreeSelect from '@/components/BasicTreeSelect/index.vue'
@@ -37,6 +37,7 @@ import { filterTreeItems, listToTree } from '@/utils/tree'
 import { cloneDeep } from 'lodash-es'
 import useApi from '@/api'
 import { booleanMap, stateMap, typeMap } from './const'
+import ElIconSelect from '@/components/ElIconSelect/index.vue'
 
 const api = useApi()
 
@@ -117,8 +118,14 @@ const [
             col: {
                 span: 12
             },
-            render: {
-                component: 'el-input'
+            render ({ formItem, formData }) {
+                return (
+                    <ElIconSelect
+                        v-model={formData[formItem.prop]}
+                        clearable
+                        style="width: 100%;"
+                    ></ElIconSelect>
+                )
             },
             isShow: () => [0, 1].includes(formProps.modelValue.type)
         },
