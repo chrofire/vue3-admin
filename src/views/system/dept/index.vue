@@ -59,7 +59,7 @@ const [
     }
 ] = useForm({
     labelWidth: '70px',
-    schema: [
+    formItems: [
         {
             prop: 'name',
             label: '部门名称',

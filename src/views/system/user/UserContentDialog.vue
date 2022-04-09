@@ -35,7 +35,7 @@ const [
     { componentProps: formProps, getFormData, setFormData, validate, resetFields }
 ] = useForm({
     labelWidth: '90px',
-    schema: [
+    formItems: [
         {
             prop: 'username',
             label: '用户名',
@@ -224,8 +224,8 @@ const getRoleList = async () => {
             state: 0
         }
         const { list } = await api.system.role.list(params)
-        const schemaItem = formProps.schema.find(item => item.prop === 'roleIdList')
-        schemaItem.render.options = list
+        const formItem = formProps.formItems.find(item => item.prop === 'roleIdList')
+        formItem.render.options = list
     } catch (error) {
         catchErrorMessage(error)
     }

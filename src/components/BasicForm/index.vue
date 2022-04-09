@@ -18,7 +18,7 @@ export default defineComponent({
     name: 'BasicForm',
     inheritAttrs: false,
     props: {
-        schema: {
+        formItems: {
             type: Array,
             default: () => [],
             required: true
@@ -46,8 +46,8 @@ export default defineComponent({
             }
         })
 
-        const genFormItems = schema => {
-            return schema.map(formItem => {
+        const genFormItems = formItems => {
+            return formItems.map(formItem => {
                 const { label, error, col = {}, render, extra, isShow, ...formItemArgs } = formItem
 
                 const formItemProps = {
@@ -342,7 +342,7 @@ export default defineComponent({
                 },
                 () =>
                     h(ElRow, props.row, () => {
-                        return genFormItems(props.schema)
+                        return genFormItems(props.formItems)
                     })
             )
         }

@@ -60,7 +60,7 @@ const [
     }
 ] = useForm({
     labelWidth: '70px',
-    schema: [
+    formItems: [
         {
             prop: 'name',
             label: '菜单名称',

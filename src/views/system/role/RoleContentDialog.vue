@@ -59,7 +59,7 @@ const [
     { componentProps: formProps, getFormData, setFormData, validate, resetFields }
 ] = useForm({
     labelWidth: '90px',
-    schema: [
+    formItems: [
         {
             prop: 'name',
             label: '角色名称',

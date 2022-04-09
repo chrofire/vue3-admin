@@ -73,7 +73,7 @@ const [
     { componentProps: formProps, getFormData, setFormData, validate, resetFields }
 ] = useForm({
     labelWidth: '90px',
-    schema: [
+    formItems: [
         {
             prop: 'type',
             label: '菜单类型',
@@ -279,14 +279,14 @@ const openDialog = async (type, payload) => {
             Object.assign(dialogProps, {
                 title: '新增菜单'
             })
-            formProps.schema.find(item => item.prop === `parentId`).extra.data = rawMenuTree
+            formProps.formItems.find(item => item.prop === `parentId`).extra.data = rawMenuTree
             break
         case 'update':
             Object.assign(dialogProps, {
                 title: '编辑菜单'
             })
             setFormData({ ...payload })
-            formProps.schema.find(item => item.prop === `parentId`).extra.data = filterTreeItems(
+            formProps.formItems.find(item => item.prop === `parentId`).extra.data = filterTreeItems(
                 rawMenuTree,
                 [payload.id]
             )
@@ -331,7 +331,7 @@ const resetData = () => {
     state.operationType = null
     resetFields()
     unref(parentIdTreeSelectRef).resetField()
-    formProps.schema.find(item => item.prop === `parentId`).extra.data = []
+    formProps.formItems.find(item => item.prop === `parentId`).extra.data = []
 }
 
 defineExpose({

@@ -28,7 +28,7 @@ const state = reactive({
 
 const [registerForm, { componentProps: formProps, getFormData, validate }] = useForm({
     labelWidth: '65px',
-    schema: [
+    formItems: [
         {
             prop: 'username',
             label: '用户名',
