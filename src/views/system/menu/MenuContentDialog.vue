@@ -35,12 +35,10 @@ import BasicTreeSelect from '@/components/BasicTreeSelect/index.vue'
 import { nextTick, reactive, ref, unref } from 'vue'
 import { filterTreeItems, listToTree } from '@/utils/tree'
 import { cloneDeep } from 'lodash-es'
-import useApi from '@/api'
+import api from '@/api'
 import { booleanMap, stateMap, typeMap } from './const'
 import ElIconSelect from '@/components/ElIconSelect/index.vue'
 import componentMap from '@/router/componentMap'
-
-const api = useApi()
 
 const props = defineProps({
     menuList: {

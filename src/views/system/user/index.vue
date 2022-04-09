@@ -43,12 +43,10 @@ import BasicPagination from '@/components/BasicPagination/index.vue'
 import BasicForm, { useForm } from '@/components/BasicForm/index.vue'
 import UserContentDialog from './UserContentDialog.vue'
 import { ref, unref } from 'vue'
-import useApi from '@/api'
+import api from '@/api'
 import { useLoading } from '@/hooks/useLoading'
 import { stateMap } from './const'
 import DeptTree from './DeptTree.vue'
-
-const api = useApi()
 
 const tableContainer = ref(null)
 const UserContentDialogRef = ref(null)

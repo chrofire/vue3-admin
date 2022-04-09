@@ -35,13 +35,11 @@ import BasicTable, { useTable } from '@/components/BasicTable/index.vue'
 import BasicForm, { useForm } from '@/components/BasicForm/index.vue'
 import DeptContentDialog from './DeptContentDialog.vue'
 import { onMounted, reactive, ref, unref } from 'vue'
-import useApi from '@/api'
+import api from '@/api'
 import { listToTree } from '@/utils/tree'
 import { cloneDeep } from 'lodash-es'
 import { useLoading } from '@/hooks/useLoading'
 import { stateMap } from './const'
-
-const api = useApi()
 
 const state = reactive({
     deptList: []

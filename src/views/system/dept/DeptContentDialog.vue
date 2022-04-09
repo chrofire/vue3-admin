@@ -35,10 +35,8 @@ import BasicTreeSelect from '@/components/BasicTreeSelect/index.vue'
 import { nextTick, reactive, ref, unref } from 'vue'
 import { filterTreeItems, listToTree } from '@/utils/tree'
 import { cloneDeep } from 'lodash-es'
-import useApi from '@/api'
+import api from '@/api'
 import { stateMap } from './const'
-
-const api = useApi()
 
 const props = defineProps({
     deptList: {

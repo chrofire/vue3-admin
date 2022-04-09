@@ -27,11 +27,9 @@
 import BasicDialog, { useDialog } from '@/components/BasicDialog/index.vue'
 import BasicForm, { useForm } from '@/components/BasicForm/index.vue'
 import { nextTick, reactive, ref, unref } from 'vue'
-import useApi from '@/api'
+import api from '@/api'
 import { stateMap } from './const'
 import { listToTree } from '@/utils/tree'
-
-const api = useApi()
 
 const emit = defineEmits(['submit'])
 

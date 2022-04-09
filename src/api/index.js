@@ -22,7 +22,7 @@ entries.forEach(([keyArr, value]) => {
     }, api)
 })
 
-const useApi = path => {
+export const useApi = path => {
     if (!path) return api
     const arr = path.split('.')
     const res = arr.reduce((prev, item, index) => {
@@ -32,4 +32,4 @@ const useApi = path => {
     return res
 }
 
-export default useApi
+export default api

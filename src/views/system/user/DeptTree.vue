@@ -54,14 +54,12 @@
 <script setup>
 import { h, onMounted, reactive, ref, unref, useAttrs } from 'vue'
 import ElIconRender from '@/components/ElIconRender/index.vue'
-import useApi from '@/api'
+import api from '@/api'
 import { useLoading } from '@/hooks/useLoading'
 import { listToTree } from '@/utils/tree'
 
 const attrs = useAttrs()
 const emit = defineEmits(['nodeChange'])
-
-const api = useApi()
 
 const deptTreeRef = ref(null)
 const treeRef = ref(null)

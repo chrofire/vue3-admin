@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import useApi from '@/api'
+import api from '@/api'
 import { LocalStorage } from '@/utils/storage'
 import { listToTree } from '@/utils/tree'
 import router, { HomeRoute } from '@/router'
@@ -7,8 +7,6 @@ import componentMap from '@/router/componentMap'
 import Layout from '@/layout/index.vue'
 import NotFound from '@/views/exceptionPage/notFound.vue'
 import { markRaw } from 'vue'
-
-const api = useApi()
 
 export const useSystemStore = defineStore('system', {
     state: () => ({

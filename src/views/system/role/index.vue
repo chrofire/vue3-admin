@@ -41,11 +41,9 @@ import BasicPagination from '@/components/BasicPagination/index.vue'
 import BasicForm, { useForm } from '@/components/BasicForm/index.vue'
 import RoleContentDialog from './RoleContentDialog.vue'
 import { onMounted, ref, unref } from 'vue'
-import useApi from '@/api'
+import api from '@/api'
 import { useLoading } from '@/hooks/useLoading'
 import { stateMap } from './const'
-
-const api = useApi()
 
 const tableContainer = ref(null)
 const RoleContentDialogRef = ref(null)
