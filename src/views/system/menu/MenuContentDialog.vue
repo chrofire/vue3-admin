@@ -38,6 +38,7 @@ import { cloneDeep } from 'lodash-es'
 import useApi from '@/api'
 import { booleanMap, stateMap, typeMap } from './const'
 import ElIconSelect from '@/components/ElIconSelect/index.vue'
+import componentMap from '@/router/componentMap'
 
 const api = useApi()
 
@@ -147,16 +148,21 @@ const [
         {
             prop: 'componentName',
             label: '组件',
-            rules: [
-                { required: true, message: '组件不能为空', trigger: 'blur' },
-                { min: 3, message: '组件长度最短3个字符', trigger: 'blur' },
-                { max: 20, message: '组件长度最长20个字符', trigger: 'blur' }
-            ],
             col: {
                 span: 12
             },
             render: {
-                component: 'el-input'
+                component: 'el-select',
+                props: {
+                    clearable: true,
+                    style: { width: '100%' }
+                },
+                options: componentMap,
+                optionProps: option => ({
+                    key: option.componentName,
+                    value: option.componentName,
+                    label: option.desc
+                })
             },
             isShow: () => [1].includes(formProps.modelValue.type)
         },
@@ -231,7 +237,7 @@ const [
                 }),
                 optionSlots: option => option.label
             },
-            isShow: () => [0, 1].includes(formProps.modelValue.type)
+            isShow: () => [1].includes(formProps.modelValue.type)
         },
         {
             prop: 'isShow',

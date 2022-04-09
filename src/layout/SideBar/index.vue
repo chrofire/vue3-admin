@@ -1,17 +1,95 @@
-<template>
-    <div class="side-bar">
+<script>
+import { ElMenu, ElMenuItem, ElScrollbar, ElSubMenu } from 'element-plus'
+import { defineComponent, h } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useSystemStore } from '@/stores/system.js'
+import * as ElIconsModule from '@element-plus/icons-vue'
 
-    </div>
-</template>
+export default defineComponent({
+    name: 'SideBar',
+    setup (props, { attrs, slots, emit, expose }) {
+        const systemStore = useSystemStore()
+        const router = useRouter()
+        const route = useRoute()
 
-<script setup>
+        const genTitle = item => {
+            return h('div', { class: 'item-content' }, [
+                h('div', { class: 'item-icon' }, ElIconsModule[item.meta.icon]?.render()),
+                h('div', { class: 'item-label' }, item.meta.name)
+            ])
+        }
+        const genMenuTree = tree => {
+            return tree.map(item => {
+                // 目录
+                if (item.meta.type === 0 && item.children && item.children.length) {
+                    return h(
+                        ElSubMenu,
+                        {
+                            index: item.meta.name
+                        },
+                        {
+                            title: () => genTitle(item),
+                            default: () => genMenuTree(item.children)
+                        }
+                    )
+                }
 
+                // 不显示
+                if (!item.meta.isShow) return null
+
+                return h(
+                    ElMenuItem,
+                    {
+                        index: item.meta.name,
+                        onClick () {
+                            // 外链
+                            if (item.meta.isExternalLink) {
+                                window.open(item.meta.fullPath)
+                                return
+                            }
+                            router.push(item.meta.fullPath)
+                        }
+                    },
+                    {
+                        title: () => genTitle(item)
+                    }
+                )
+            })
+        }
+
+        return () => {
+            return h(
+                'div',
+                { class: 'side-bar' },
+                h(ElScrollbar, {}, () =>
+                    h(
+                        ElMenu,
+                        {
+                            router: false,
+                            defaultActive: route.meta.name
+                        },
+                        () => genMenuTree(systemStore.menuTree)
+                    )
+                )
+            )
+        }
+    }
+})
 </script>
 
 <style lang="scss" scoped>
 .side-bar {
     width: 200px;
     height: 100%;
-    background-color: #87e8de;
+}
+.item-content {
+    display: flex;
+    .item-icon {
+        width: 20px;
+        margin-right: 3px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 }
 </style>
