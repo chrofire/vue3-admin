@@ -10,7 +10,13 @@
             <TopBar></TopBar>
             <TagBar></TagBar>
             <div class="main-layout-content">
-                <router-view />
+                <router-view v-slot="{ Component, route }">
+                    <transition name="el-fade-in-linear" mode="out-in" appear>
+                        <keep-alive :include="tagBarStore.cacheList">
+                            <component :is="Component" :key="route.fullPath"></component>
+                        </keep-alive>
+                    </transition>
+                </router-view>
             </div>
         </div>
     </div>
@@ -20,6 +26,9 @@
 import SideBar from './SideBar/index.vue'
 import TopBar from './TopBar/index.vue'
 import TagBar from './TagBar/index.vue'
+import { useTagBarStore } from '@/stores/tagBar.js'
+
+const tagBarStore = useTagBarStore()
 </script>
 
 <style lang="scss" scoped>

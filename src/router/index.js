@@ -29,11 +29,13 @@ export default router
 
 export const HomeRoute = {
     path: '/home',
-    name: 'Home',
+    name: '首页',
     component: markRaw(Home),
     children: [],
     meta: {
+        id: -1,
         fullPath: '/home',
+        componentName: 'Home',
         name: '首页',
         type: 1,
         isExternalLink: false,
