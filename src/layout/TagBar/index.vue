@@ -47,7 +47,7 @@ const handleRouter = item => {
 
 const updateScrollbar = async () => {
     await nextTick()
-    unref(scrollbarRef).update()
+    unref(scrollbarRef)?.update()
 }
 
 watch(

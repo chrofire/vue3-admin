@@ -7,10 +7,11 @@ import componentMap from '@/router/componentMap'
 import Layout from '@/layout/index.vue'
 import NotFound from '@/views/exceptionPage/notFound.vue'
 import { markRaw } from 'vue'
+import { useTagBarStore } from '@/stores/tagBar.js'
 
 export const useSystemStore = defineStore('system', {
     state: () => ({
-        userInfo: null,
+        userInfo: {},
         isLogin: false,
         rawMenuList: [],
         menuTree: [],
@@ -43,11 +44,13 @@ export const useSystemStore = defineStore('system', {
                 router.removeRoute(route.name)
             })
         },
-        logout () {
+        async logout () {
+            const tagBarStore = useTagBarStore()
             LocalStorage.removeItem('token')
-            router.replace('/login')
+            await router.replace('/login')
             this.removeRoutes()
             this.$reset()
+            tagBarStore.$reset()
         }
     }
 })
@@ -99,6 +102,7 @@ function buildMenuTree (tree = [], parentNode) {
 function buildRouteTree (tree = []) {
     const layoutRoute = {
         path: '/_layout',
+        name: '_Layout',
         component: markRaw(Layout),
         children: [HomeRoute]
     }

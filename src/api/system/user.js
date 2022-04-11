@@ -34,3 +34,8 @@ export const login = params => {
 export const userInfo = params => {
     return request.get('/user/userInfo', { params }).then(res => res.data)
 }
+
+// 更新当前用户密码
+export const updatePassword = params => {
+    return request.post('/user/updatePassword', params).then(res => res.data)
+}
