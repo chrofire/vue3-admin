@@ -27,7 +27,7 @@ export const useSystemStore = defineStore('system', {
             const { menus, permissions, ...args } = await api.system.user.userInfo()
             this.userInfo = args
             this.rawMenuList = menus
-            this.permissionList = permissions
+            this.permissionList = permissions.map(item => item.permission)
             const rawMenuTree = listToTree(menus)
             const _menuTree = buildMenuTree(rawMenuTree)
             this.menuTree = [HomeRoute].concat(_menuTree.filter(item => item.meta.parentId === null))

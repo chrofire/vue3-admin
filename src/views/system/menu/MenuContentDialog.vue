@@ -169,8 +169,7 @@ const [
             label: '权限标识',
             rules: [
                 { required: true, message: '权限标识不能为空', trigger: 'blur' },
-                { min: 3, message: '权限标识长度最短3个字符', trigger: 'blur' },
-                { max: 20, message: '权限标识长度最长20个字符', trigger: 'blur' }
+                { max: 255, message: '权限标识长度最长255个字符', trigger: 'blur' }
             ],
             render: {
                 component: 'el-input'

@@ -4,10 +4,10 @@
             <BasicForm @register="registerSearchForm" v-bind="searchFormProps"></BasicForm>
         </div>
         <div class="operate-list">
-            <el-button type="primary" @click="DeptContentDialogRef.openDialog('add')">
+            <el-button type="primary" @click="DeptContentDialogRef.openDialog('add')" v-permission="[`system:dept:add`]">
                 新增
             </el-button>
-            <el-button type="primary" @click="getDataList">刷新</el-button>
+            <el-button type="primary" @click="getDataList" v-permission="[`system:dept:list`]">刷新</el-button>
         </div>
         <div class="table-container" ref="tableContainer">
             <BasicTable
@@ -97,7 +97,13 @@ const [
             render: ({ formItem, formData }) => {
                 return (
                     <div class="btn-list">
-                        <el-button type="primary" onClick={() => getDataList()}>查询</el-button>
+                        <el-button
+                            type="primary"
+                            onClick={() => getDataList()}
+                            v-permission={[[`system:dept:list`]]}
+                        >
+                            查询
+                        </el-button>
                         <el-button onClick={() => searchFormResetFields()}>重置</el-button>
                     </div>
                 )
@@ -148,10 +154,15 @@ const [registerTable, { componentProps: tableProps }] = useTable({
                         <el-button
                             type="primary"
                             onClick={() => unref(DeptContentDialogRef).openDialog('update', row)}
+                            v-permission={[[`system:dept:update`]]}
                         >
                             编辑
                         </el-button>
-                        <el-button type="danger" onClick={() => deleteData(row)}>
+                        <el-button
+                            type="danger"
+                            onClick={() => deleteData(row)}
+                            v-permission={[[`system:dept:delete`]]}
+                        >
                             删除
                         </el-button>
                     </>

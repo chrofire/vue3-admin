@@ -13,6 +13,9 @@ app.use(router)
 import { catchErrorMessage } from '@/utils/message'
 window.catchErrorMessage = catchErrorMessage
 
+import directives from '@/directives'
+app.use(directives)
+
 app.config.globalProperties.console = window.console
 
 app.mount('#app')
