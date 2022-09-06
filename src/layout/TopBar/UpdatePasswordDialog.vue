@@ -1,12 +1,11 @@
 <template>
-    <BasicDialog @register="registerDialog" v-bind="dialogProps">
-        <BasicForm @register="registerForm" v-bind="formProps"></BasicForm>
-    </BasicDialog>
+    <BaseDialog @register="registerDialog" v-bind="dialogProps">
+        <BaseForm @register="registerForm" v-bind="formProps"></BaseForm>
+    </BaseDialog>
 </template>
 
 <script setup>
-import BasicDialog, { useDialog } from '@/components/BasicDialog/index.vue'
-import BasicForm, { useForm } from '@/components/BasicForm/index.vue'
+import { BaseDialog, useDialog, BaseForm, useForm } from 'element-plus-components-lib'
 import api from '@/api'
 
 const [registerDialog, { componentProps: dialogProps, setVisible: setDialogVisible }] = useDialog({
@@ -27,7 +26,7 @@ const [
     { componentProps: formProps, getFormData, validate, resetFields }
 ] = useForm({
     labelWidth: '70px',
-    formItems: [
+    items: [
         {
             prop: 'oldPassword',
             label: '旧密码',
@@ -36,8 +35,8 @@ const [
                 { min: 3, message: '旧密码长度最短3个字符', trigger: 'blur' },
                 { max: 20, message: '旧密码长度最长20个字符', trigger: 'blur' }
             ],
-            render: {
-                component: 'el-input',
+            defaultRenderer: {
+                component: 'input',
                 props: {
                     type: 'password',
                     showPassword: true
@@ -52,8 +51,8 @@ const [
                 { min: 3, message: '新密码长度最短3个字符', trigger: 'blur' },
                 { max: 20, message: '新密码长度最长20个字符', trigger: 'blur' }
             ],
-            render: {
-                component: 'el-input',
+            defaultRenderer: {
+                component: 'input',
                 props: {
                     type: 'password',
                     showPassword: true

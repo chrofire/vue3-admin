@@ -1,6 +1,6 @@
 <template>
-    <BasicDialog @register="registerDialog" v-bind="dialogProps">
-        <BasicForm @register="registerForm" v-bind="formProps">
+    <BaseDialog @register="registerDialog" v-bind="dialogProps">
+        <BaseForm @register="registerForm" v-bind="formProps">
             <template #menu>
                 <el-tree
                     v-loading="state.menuTreeLoading"
@@ -19,16 +19,15 @@
                     style="width: 100%;"
                 ></el-tree>
             </template>
-        </BasicForm>
-    </BasicDialog>
+        </BaseForm>
+    </BaseDialog>
 </template>
 
 <script setup>
-import BasicDialog, { useDialog } from '@/components/BasicDialog/index.vue'
-import BasicForm, { useForm } from '@/components/BasicForm/index.vue'
+import { BaseDialog, useDialog, BaseForm, useForm } from 'element-plus-components-lib'
 import { nextTick, reactive, ref, unref } from 'vue'
 import api from '@/api'
-import { stateMap } from './const'
+import { stateMap } from './constant'
 import { listToTree } from '@/utils/tree'
 
 const emit = defineEmits(['submit'])
@@ -59,7 +58,7 @@ const [
     { componentProps: formProps, getFormData, setFormData, validate, resetFields }
 ] = useForm({
     labelWidth: '90px',
-    formItems: [
+    items: [
         {
             prop: 'name',
             label: '角色名称',
@@ -68,30 +67,32 @@ const [
                 { min: 3, message: '角色名称长度最短3个字符', trigger: 'blur' },
                 { max: 20, message: '角色名称长度最长20个字符', trigger: 'blur' }
             ],
-            render: {
-                component: 'el-input'
+            defaultRenderer: {
+                component: 'input'
             }
         },
         {
             prop: 'state',
             label: '状态',
             rules: [{ required: true, message: '状态不能为空', trigger: 'change' }],
-            render: {
-                component: 'el-radio-group',
-                type: 'button',
-                options: [...stateMap.values()],
-                optionProps: option => ({
-                    key: option.value,
-                    label: option.value
-                }),
-                optionSlots: option => option.label
+            defaultRenderer: {
+                component: 'radio-group',
+                props: {
+                    type: 'button',
+                    options: [...stateMap.values()],
+                    optionProps: option => ({
+                        key: option.value,
+                        label: option.value
+                    }),
+                    labelRenderer: (option, rawOption) => rawOption.label
+                }
             }
         },
         {
             prop: 'remark',
             label: '备注',
-            render: {
-                component: 'el-input'
+            defaultRenderer: {
+                component: 'input'
             }
         },
         {

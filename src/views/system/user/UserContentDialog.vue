@@ -1,15 +1,14 @@
 <template>
-    <BasicDialog @register="registerDialog" v-bind="dialogProps">
-        <BasicForm @register="registerForm" v-bind="formProps"></BasicForm>
-    </BasicDialog>
+    <BaseDialog @register="registerDialog" v-bind="dialogProps">
+        <BaseForm @register="registerForm" v-bind="formProps"></BaseForm>
+    </BaseDialog>
 </template>
 
 <script setup>
-import BasicDialog, { useDialog } from '@/components/BasicDialog/index.vue'
-import BasicForm, { useForm } from '@/components/BasicForm/index.vue'
+import { BaseDialog, useDialog, BaseForm, useForm } from 'element-plus-components-lib'
 import { nextTick, reactive } from 'vue'
 import api from '@/api'
-import { stateMap } from './const'
+import { stateMap } from './constant'
 
 const emit = defineEmits(['submit'])
 
@@ -35,7 +34,7 @@ const [
     { componentProps: formProps, getFormData, setFormData, validate, resetFields }
 ] = useForm({
     labelWidth: '90px',
-    formItems: [
+    items: [
         {
             prop: 'username',
             label: '用户名',
@@ -44,8 +43,8 @@ const [
                 { min: 3, message: '用户名长度最短3个字符', trigger: 'blur' },
                 { max: 20, message: '用户名长度最长20个字符', trigger: 'blur' }
             ],
-            render: {
-                component: 'el-input'
+            defaultRenderer: {
+                component: 'input'
             }
         },
         {
@@ -56,8 +55,8 @@ const [
                 { min: 3, message: '密码长度最短3个字符', trigger: 'blur' },
                 { max: 20, message: '密码长度最长20个字符', trigger: 'blur' }
             ],
-            render: {
-                component: 'el-input',
+            defaultRenderer: {
+                component: 'input',
                 props: {
                     type: 'password',
                     showPassword: true
@@ -73,8 +72,8 @@ const [
                 { min: 3, message: '昵称长度最短3个字符', trigger: 'blur' },
                 { max: 20, message: '昵称长度最长20个字符', trigger: 'blur' }
             ],
-            render: {
-                component: 'el-input'
+            defaultRenderer: {
+                component: 'input'
             }
         },
         {
@@ -97,8 +96,8 @@ const [
                     trigger: 'blur'
                 }
             ],
-            render: {
-                component: 'el-input'
+            defaultRenderer: {
+                component: 'input'
             }
         },
         {
@@ -122,50 +121,52 @@ const [
                     trigger: 'blur'
                 }
             ],
-            render: {
-                component: 'el-input'
+            defaultRenderer: {
+                component: 'input'
             }
         },
         {
             prop: 'state',
             label: '状态',
             rules: [{ required: true, message: '状态不能为空', trigger: 'change' }],
-            render: {
-                component: 'el-radio-group',
-                type: 'button',
-                options: [...stateMap.values()],
-                optionProps: option => ({
-                    key: option.value,
-                    label: option.value
-                }),
-                optionSlots: option => option.label
+            defaultRenderer: {
+                component: 'radio-group',
+                props: {
+                    type: 'button',
+                    options: [...stateMap.values()],
+                    optionProps: option => ({
+                        key: option.value,
+                        label: option.value
+                    }),
+                    labelRenderer: (option, rawOption) => rawOption.label
+                }
             }
         },
         {
             prop: 'roleIdList',
             label: '角色',
-            render: {
-                component: 'el-select',
-                options: [],
-                optionProps: option => ({
-                    key: option.id,
-                    value: option.id,
-                    label: option.name
-                }),
+            defaultRenderer: {
+                component: 'select',
                 props: {
                     size: 'default',
                     multiple: true,
                     style: {
                         width: `100%`
-                    }
+                    },
+                    options: [],
+                    optionProps: option => ({
+                        key: option.id,
+                        value: option.id,
+                        label: option.name
+                    })
                 }
             }
         },
         {
             prop: 'remark',
             label: '备注',
-            render: {
-                component: 'el-input'
+            defaultRenderer: {
+                component: 'input'
             }
         }
     ],
@@ -224,8 +225,8 @@ const getRoleList = async () => {
             state: 0
         }
         const { list } = await api.system.role.list(params)
-        const formItem = formProps.formItems.find(item => item.prop === 'roleIdList')
-        formItem.render.options = list
+        const formItem = formProps.items.find(item => item.prop === 'roleIdList')
+        formItem.defaultRenderer.props.options = list
     } catch (error) {
         catchErrorMessage(error)
     }

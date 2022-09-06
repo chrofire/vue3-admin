@@ -12,9 +12,10 @@
             <div class="main-layout-content">
                 <router-view v-slot="{ Component, route }">
                     <transition name="el-fade-in-linear" mode="out-in" appear>
-                        <keep-alive :include="tagBarStore.cacheList">
+                        <!-- <keep-alive :include="tagBarStore.cacheList">
                             <component :is="Component" :key="route.fullPath"></component>
-                        </keep-alive>
+                        </keep-alive> -->
+                        <component :is="Component" :key="route.fullPath"></component>
                     </transition>
                 </router-view>
             </div>

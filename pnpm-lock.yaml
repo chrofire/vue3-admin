@@ -8,6 +8,7 @@ specifiers:
   axios: ^0.27.2
   dayjs: ^1.11.5
   element-plus: ^2.2.16
+  element-plus-components-lib: ^0.0.1
   eslint: ^8.23.0
   eslint-plugin-vue: ^9.4.0
   lodash-es: ^4.17.21
@@ -31,6 +32,7 @@ dependencies:
   axios: 0.27.2
   dayjs: 1.11.5
   element-plus: 2.2.16_vue@3.2.38
+  element-plus-components-lib: 0.0.1
   lodash-es: 4.17.21
   normalize.css: 8.0.1
   pinia: 2.0.22_vue@3.2.38
@@ -1044,6 +1046,15 @@ packages:
   /electron-to-chromium/1.4.242:
     resolution: {integrity: sha512-nPdgMWtjjWGCtreW/2adkrB2jyHjClo9PtVhR6rW+oxa4E4Wom642Tn+5LslHP3XPL5MCpkn5/UEY60EXylNeQ==}
     dev: true
+
+  /element-plus-components-lib/0.0.1:
+    resolution: {integrity: sha512-w3teraulFuY4yJfs8as7On1kma/YeXqahiUznVqnffMucgS1SiSok1iojMTo37/TDhkIE5stWQnq+kHRXyQ8rg==}
+    dependencies:
+      element-plus: 2.2.16_vue@3.2.38
+      vue: 3.2.38
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+    dev: false
 
   /element-plus/2.2.16_vue@3.2.38:
     resolution: {integrity: sha512-rvaTMFIujec9YDC5lyaiQv2XVUCHuhVDq2k+9vQxP78N8Wd07iEOGa9pvEVOO2uYc75l4rSl2RE/IWPH/6Mdzw==}

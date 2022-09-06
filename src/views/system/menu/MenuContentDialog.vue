@@ -1,6 +1,6 @@
 <template>
-    <BasicDialog @register="registerDialog" v-bind="dialogProps">
-        <BasicForm @register="registerForm" v-bind="formProps">
+    <BaseDialog @register="registerDialog" v-bind="dialogProps">
+        <BaseForm @register="registerForm" v-bind="formProps">
             <template #parentId="{ formItem, formData }">
                 <BasicTreeSelect
                     v-model="formData[formItem.prop]"
@@ -24,19 +24,18 @@
                     "
                 ></BasicTreeSelect>
             </template>
-        </BasicForm>
-    </BasicDialog>
+        </BaseForm>
+    </BaseDialog>
 </template>
 
 <script lang="jsx" setup>
-import BasicDialog, { useDialog } from '@/components/BasicDialog/index.vue'
-import BasicForm, { useForm } from '@/components/BasicForm/index.vue'
+import { BaseDialog, useDialog, BaseForm, useForm } from 'element-plus-components-lib'
 import BasicTreeSelect from '@/components/BasicTreeSelect/index.vue'
 import { nextTick, reactive, ref, unref } from 'vue'
 import { filterTreeItems, listToTree } from '@/utils/tree'
 import { cloneDeep } from 'lodash-es'
 import api from '@/api'
-import { booleanMap, stateMap, typeMap } from './const'
+import { booleanMap, stateMap, typeMap } from './constant'
 import ElIconSelect from '@/components/ElIconSelect/index.vue'
 import componentMap from '@/router/componentMap'
 
@@ -73,20 +72,22 @@ const [
     { componentProps: formProps, getFormData, setFormData, validate, resetFields }
 ] = useForm({
     labelWidth: '90px',
-    formItems: [
+    items: [
         {
             prop: 'type',
             label: '菜单类型',
             rules: [{ required: true, message: '菜单类型不能为空', trigger: 'change' }],
-            render: {
-                component: 'el-radio-group',
-                type: 'button',
-                options: [...typeMap.values()],
-                optionProps: option => ({
-                    key: option.value,
-                    label: option.value
-                }),
-                optionSlots: option => option.label
+            defaultRenderer: {
+                component: 'radio-group',
+                props: {
+                    type: 'button',
+                    options: [...typeMap.values()],
+                    optionProps: option => ({
+                        key: option.value,
+                        label: option.value
+                    }),
+                    labelRenderer: (option, rawOption) => rawOption.label
+                }
             }
         },
         {
@@ -107,8 +108,8 @@ const [
             col: {
                 span: 12
             },
-            render: {
-                component: 'el-input'
+            defaultRenderer: {
+                component: 'input'
             }
         },
         {
@@ -117,7 +118,7 @@ const [
             col: {
                 span: 12
             },
-            render ({ formItem, formData }) {
+            defaultRenderer ({ formItem, formData }) {
                 return (
                     <ElIconSelect
                         v-model={formData[formItem.prop]}
@@ -138,8 +139,8 @@ const [
             col: {
                 span: 12
             },
-            render: {
-                component: 'el-input'
+            defaultRenderer: {
+                component: 'input'
             },
             isShow: () => [0, 1].includes(formProps.modelValue.type)
         },
@@ -149,8 +150,8 @@ const [
             col: {
                 span: 12
             },
-            render: {
-                component: 'el-select',
+            defaultRenderer: {
+                component: 'select',
                 props: {
                     clearable: true,
                     style: { width: '100%' }
@@ -171,8 +172,8 @@ const [
                 { required: true, message: '权限标识不能为空', trigger: 'blur' },
                 { max: 255, message: '权限标识长度最长255个字符', trigger: 'blur' }
             ],
-            render: {
-                component: 'el-input'
+            defaultRenderer: {
+                component: 'input'
             },
             isShow: () => [2].includes(formProps.modelValue.type)
         },
@@ -182,38 +183,42 @@ const [
             col: {
                 span: 24
             },
-            render: {
-                component: 'el-input-number'
+            defaultRenderer: {
+                component: 'input-number'
             }
         },
         {
             prop: 'state',
             label: '状态',
             rules: [{ required: true, message: '状态不能为空', trigger: 'change' }],
-            render: {
-                component: 'el-radio-group',
-                type: 'button',
-                options: [...stateMap.values()],
-                optionProps: option => ({
-                    key: option.value,
-                    label: option.value
-                }),
-                optionSlots: option => option.label
+            defaultRenderer: {
+                component: 'radio-group',
+                props: {
+                    type: 'button',
+                    options: [...stateMap.values()],
+                    optionProps: option => ({
+                        key: option.value,
+                        label: option.value
+                    }),
+                    labelRenderer: (option, rawOption) => rawOption.label
+                }
             }
         },
         {
             prop: 'isCache',
             label: '是否缓存',
             rules: [{ required: true, message: '是否缓存不能为空', trigger: 'change' }],
-            render: {
-                component: 'el-radio-group',
-                type: 'button',
-                options: [...booleanMap.values()],
-                optionProps: option => ({
-                    key: option.value,
-                    label: option.value
-                }),
-                optionSlots: option => option.label
+            defaultRenderer: {
+                component: 'radio-group',
+                props: {
+                    type: 'button',
+                    options: [...booleanMap.values()],
+                    optionProps: option => ({
+                        key: option.value,
+                        label: option.value
+                    }),
+                    labelRenderer: (option, rawOption) => rawOption.label
+                }
             },
             isShow: () => [1].includes(formProps.modelValue.type)
         },
@@ -224,15 +229,17 @@ const [
             col: {
                 span: 12
             },
-            render: {
-                component: 'el-radio-group',
-                type: 'button',
-                options: [...booleanMap.values()],
-                optionProps: option => ({
-                    key: option.value,
-                    label: option.value
-                }),
-                optionSlots: option => option.label
+            defaultRenderer: {
+                component: 'radio-group',
+                props: {
+                    type: 'button',
+                    options: [...booleanMap.values()],
+                    optionProps: option => ({
+                        key: option.value,
+                        label: option.value
+                    }),
+                    labelRenderer: (option, rawOption) => rawOption.label
+                }
             },
             isShow: () => [1].includes(formProps.modelValue.type)
         },
@@ -243,23 +250,25 @@ const [
             col: {
                 span: 12
             },
-            render: {
-                component: 'el-radio-group',
-                type: 'button',
-                options: [...booleanMap.values()],
-                optionProps: option => ({
-                    key: option.value,
-                    label: option.value
-                }),
-                optionSlots: option => option.label
+            defaultRenderer: {
+                component: 'radio-group',
+                props: {
+                    type: 'button',
+                    options: [...booleanMap.values()],
+                    optionProps: option => ({
+                        key: option.value,
+                        label: option.value
+                    }),
+                    labelRenderer: (option, rawOption) => rawOption.label
+                }
             },
             isShow: () => [0, 1].includes(formProps.modelValue.type)
         },
         {
             prop: 'remark',
             label: '备注',
-            render: {
-                component: 'el-input'
+            defaultRenderer: {
+                component: 'input'
             }
         }
     ],
@@ -278,14 +287,14 @@ const openDialog = async (type, payload) => {
             Object.assign(dialogProps, {
                 title: '新增菜单'
             })
-            formProps.formItems.find(item => item.prop === `parentId`).extra.data = rawMenuTree
+            formProps.items.find(item => item.prop === `parentId`).extra.data = rawMenuTree
             break
         case 'update':
             Object.assign(dialogProps, {
                 title: '编辑菜单'
             })
             setFormData({ ...payload })
-            formProps.formItems.find(item => item.prop === `parentId`).extra.data = filterTreeItems(
+            formProps.items.find(item => item.prop === `parentId`).extra.data = filterTreeItems(
                 rawMenuTree,
                 [payload.id]
             )
@@ -330,7 +339,7 @@ const resetData = () => {
     state.operationType = null
     resetFields()
     unref(parentIdTreeSelectRef).resetField()
-    formProps.formItems.find(item => item.prop === `parentId`).extra.data = []
+    formProps.items.find(item => item.prop === `parentId`).extra.data = []
 }
 
 defineExpose({

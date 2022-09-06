@@ -1,7 +1,7 @@
 <template>
     <div class="main-container">
         <div class="search-container">
-            <BasicForm @register="registerSearchForm" v-bind="searchFormProps"></BasicForm>
+            <BaseForm @register="registerSearchForm" v-bind="searchFormProps"></BaseForm>
         </div>
         <div class="operate-list">
             <el-button type="primary" @click="DeptContentDialogRef.openDialog('add')" v-permission="[`system:dept:add`]">
@@ -10,11 +10,11 @@
             <el-button type="primary" @click="getDataList" v-permission="[`system:dept:list`]">刷新</el-button>
         </div>
         <div class="table-container" ref="tableContainer">
-            <BasicTable
-                ref="BasicTableRef"
+            <BaseTable
+                ref="BaseTableRef"
                 @register="registerTable"
                 v-bind="tableProps"
-            ></BasicTable>
+            ></BaseTable>
         </div>
         <DeptContentDialog
             ref="DeptContentDialogRef"
@@ -31,15 +31,14 @@ export default {
 </script>
 
 <script lang="jsx" setup>
-import BasicTable, { useTable } from '@/components/BasicTable/index.vue'
-import BasicForm, { useForm } from '@/components/BasicForm/index.vue'
+import { BaseTable, useTable, BaseForm, useForm } from 'element-plus-components-lib'
 import DeptContentDialog from './DeptContentDialog.vue'
 import { onMounted, reactive, ref, unref } from 'vue'
 import api from '@/api'
 import { listToTree } from '@/utils/tree'
 import { cloneDeep } from 'lodash-es'
 import { useLoading } from '@/hooks/useLoading'
-import { stateMap } from './const'
+import { stateMap } from './constant'
 
 const state = reactive({
     deptList: []
@@ -59,15 +58,15 @@ const [
     }
 ] = useForm({
     labelWidth: '70px',
-    formItems: [
+    items: [
         {
             prop: 'name',
             label: '部门名称',
             col: {
                 span: 8
             },
-            render: {
-                component: 'el-input',
+            defaultRenderer: {
+                component: 'input',
                 props: {
                     clearable: true
                 }
@@ -79,13 +78,13 @@ const [
             col: {
                 span: 8
             },
-            render: {
-                component: 'el-select',
+            defaultRenderer: {
+                component: 'select',
                 props: {
                     clearable: true,
-                    style: { width: '100%' }
-                },
-                options: [...stateMap.values()]
+                    style: { width: '100%' },
+                    options: [...stateMap.values()]
+                }
             }
         },
         {
@@ -94,7 +93,7 @@ const [
             col: {
                 span: 8
             },
-            render: ({ formItem, formData }) => {
+            defaultRenderer: ({ formItem, formData }) => {
                 return (
                     <div class="btn-list">
                         <el-button
@@ -128,7 +127,7 @@ const [registerTable, { componentProps: tableProps }] = useTable({
         {
             prop: 'state',
             label: '状态',
-            render ({ row, column }) {
+            cellRenderer ({ row, column }) {
                 const mapItem = stateMap.get(row[column.property]) || stateMap.get(1)
                 return <el-tag type={mapItem.type}>{mapItem.label}</el-tag>
             }
@@ -148,7 +147,7 @@ const [registerTable, { componentProps: tableProps }] = useTable({
         {
             label: '操作',
             width: 160,
-            render ({ row }) {
+            cellRenderer ({ row }) {
                 return (
                     <>
                         <el-button
@@ -170,7 +169,7 @@ const [registerTable, { componentProps: tableProps }] = useTable({
             }
         }
     ],
-    dataSource: []
+    data: []
 })
 
 const getDataList = async () => {
@@ -185,7 +184,7 @@ const getDataList = async () => {
             item.order === null && delete item.order
             return item
         })
-        tableProps.dataSource = listToTree(cloneDeep(sortList))
+        tableProps.data = listToTree(cloneDeep(sortList))
     } catch (error) {
         catchErrorMessage(error)
     } finally {

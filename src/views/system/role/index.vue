@@ -1,7 +1,7 @@
 <template>
     <div class="main-container">
         <div class="search-container">
-            <BasicForm @register="registerSearchForm" v-bind="searchFormProps"></BasicForm>
+            <BaseForm @register="registerSearchForm" v-bind="searchFormProps"></BaseForm>
         </div>
         <div class="operate-list">
             <el-button type="primary" @click="RoleContentDialogRef.openDialog('add')" v-permission="[`system:role:add`]">
@@ -10,17 +10,17 @@
             <el-button type="primary" @click="getDataList" v-permission="[`system:role:pageList`]">刷新</el-button>
         </div>
         <div class="table-container" ref="tableContainer">
-            <BasicTable
-                ref="BasicTableRef"
+            <BaseTable
+                ref="BaseTableRef"
                 @register="registerTable"
                 v-bind="tableProps"
-            ></BasicTable>
+            ></BaseTable>
         </div>
         <div class="pagination-container">
-            <BasicPagination
+            <BasePagination
                 :pagination="tableProps.pagination"
-                @paginationChange="getDataList"
-            ></BasicPagination>
+                @change="getDataList"
+            ></BasePagination>
         </div>
         <RoleContentDialog
             ref="RoleContentDialogRef"
@@ -36,14 +36,12 @@ export default {
 </script>
 
 <script lang="jsx" setup>
-import BasicTable, { useTable } from '@/components/BasicTable/index.vue'
-import BasicPagination from '@/components/BasicPagination/index.vue'
-import BasicForm, { useForm } from '@/components/BasicForm/index.vue'
+import { BaseTable, useTable, BaseForm, useForm, BasePagination } from 'element-plus-components-lib'
 import RoleContentDialog from './RoleContentDialog.vue'
 import { onMounted, ref, unref } from 'vue'
 import api from '@/api'
 import { useLoading } from '@/hooks/useLoading'
-import { stateMap } from './const'
+import { stateMap } from './constant'
 
 const tableContainer = ref(null)
 const RoleContentDialogRef = ref(null)
@@ -59,15 +57,15 @@ const [
     }
 ] = useForm({
     labelWidth: '70px',
-    formItems: [
+    items: [
         {
             prop: 'name',
             label: '角色名称',
             col: {
                 span: 8
             },
-            render: {
-                component: 'el-input',
+            defaultRenderer: {
+                component: 'input',
                 props: {
                     clearable: true
                 }
@@ -79,13 +77,13 @@ const [
             col: {
                 span: 8
             },
-            render: {
-                component: 'el-select',
+            defaultRenderer: {
+                component: 'select',
                 props: {
                     clearable: true,
-                    style: { width: '100%' }
-                },
-                options: [...stateMap.values()]
+                    style: { width: '100%' },
+                    options: [...stateMap.values()]
+                }
             }
         },
         {
@@ -94,7 +92,7 @@ const [
             col: {
                 span: 8
             },
-            render: ({ formItem, formData }) => {
+            defaultRenderer: ({ formItem, formData }) => {
                 return (
                     <div class="btn-list">
                         <el-button
@@ -124,7 +122,7 @@ const [registerTable, { componentProps: tableProps }] = useTable({
         {
             prop: 'state',
             label: '状态',
-            render ({ row, column }) {
+            cellRenderer ({ row, column }) {
                 const mapItem = stateMap.get(row[column.property]) || stateMap.get(1)
                 return <el-tag type={mapItem.type}>{mapItem.label}</el-tag>
             }
@@ -136,7 +134,7 @@ const [registerTable, { componentProps: tableProps }] = useTable({
         {
             label: '操作',
             width: 160,
-            render ({ row }) {
+            cellRenderer ({ row }) {
                 return (
                     <>
                         <el-button
@@ -158,7 +156,7 @@ const [registerTable, { componentProps: tableProps }] = useTable({
             }
         }
     ],
-    dataSource: [],
+    data: [],
     pagination: {
         pageNum: 1,
         pageSize: 10,
@@ -174,7 +172,7 @@ const getDataList = async () => {
             ...getSearchFormData()
         }
         const { list, ...pagination } = await api.system.role.pageList(params)
-        tableProps.dataSource = list
+        tableProps.data = list
         tableProps.pagination = pagination
     } catch (error) {
         catchErrorMessage(error)

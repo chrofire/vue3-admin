@@ -2,7 +2,7 @@
     <div class="login">
         <div class="login-box">
             <div class="title">登录</div>
-            <BasicForm @register="registerForm" v-bind="formProps"></BasicForm>
+            <BaseForm @register="registerForm" v-bind="formProps"></BaseForm>
             <div class="btn-box">
                 <el-button class="btn" type="primary" @click="login" :loading="state.btnLoading">
                     登录
@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import BasicForm, { useForm } from '@/components/BasicForm/index.vue'
+import { BaseForm, useForm } from 'element-plus-components-lib'
 import { useSystemStore } from '@/stores/system.js'
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
@@ -28,7 +28,7 @@ const state = reactive({
 
 const [registerForm, { componentProps: formProps, getFormData, validate }] = useForm({
     labelWidth: '65px',
-    formItems: [
+    items: [
         {
             prop: 'username',
             label: '用户名',
@@ -37,8 +37,8 @@ const [registerForm, { componentProps: formProps, getFormData, validate }] = use
                 { min: 3, message: '用户名长度最短3个字符', trigger: 'blur' },
                 { max: 20, message: '用户名长度最长20个字符', trigger: 'blur' }
             ],
-            render: {
-                component: 'el-input'
+            defaultRenderer: {
+                component: 'input'
             }
         },
         {
@@ -49,8 +49,8 @@ const [registerForm, { componentProps: formProps, getFormData, validate }] = use
                 { min: 3, message: '密码长度最短3个字符', trigger: 'blur' },
                 { max: 20, message: '密码长度最长20个字符', trigger: 'blur' }
             ],
-            render: {
-                component: 'el-input',
+            defaultRenderer: {
+                component: 'input',
                 props: {
                     type: 'password',
                     showPassword: true,
