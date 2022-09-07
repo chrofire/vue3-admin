@@ -1,37 +1,12 @@
 <template>
     <BaseDialog @register="registerDialog" v-bind="dialogProps">
-        <BaseForm @register="registerForm" v-bind="formProps">
-            <template #parentId="{ formItem, formData }">
-                <BasicTreeSelect
-                    v-model="formData[formItem.prop]"
-                    ref="parentIdTreeSelectRef"
-                    :data="formItem.extra.data"
-                    :props="{
-                        children: 'children',
-                        label: 'name'
-                    }"
-                    :clearable="true"
-                    :highlight-current="true"
-                    node-key="id"
-                    :expand-on-click-node="false"
-                    @node-click="
-                        (data) => {
-                            // 修改表单值
-                            formData[formItem.prop] = data.id
-                            // 修改输入框值
-                            parentIdTreeSelectRef.state.inputVal = data.name
-                        }
-                    "
-                ></BasicTreeSelect>
-            </template>
-        </BaseForm>
+        <BaseForm @register="registerForm" v-bind="formProps"></BaseForm>
     </BaseDialog>
 </template>
 
 <script setup>
 import { BaseDialog, useDialog, BaseForm, useForm } from 'element-plus-components-lib'
-import BasicTreeSelect from '@/components/BasicTreeSelect/index.vue'
-import { nextTick, reactive, ref, unref } from 'vue'
+import { nextTick, reactive } from 'vue'
 import { filterTreeItems, listToTree } from '@/utils/tree'
 import { cloneDeep } from 'lodash-es'
 import api from '@/api'
@@ -45,8 +20,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['submit'])
-
-const parentIdTreeSelectRef = ref(null)
 
 const state = reactive({
     operationType: null
@@ -86,8 +59,21 @@ const [
         {
             prop: 'parentId',
             label: '上级部门',
-            extra: {
-                data: []
+            defaultRenderer: {
+                component: 'tree-select',
+                props: {
+                    class: 'w-100%',
+                    data: [],
+                    nodeKey: 'id',
+                    props: {
+                        children: 'children',
+                        label: 'name'
+                    },
+                    clearable: true,
+                    checkStrictly: true,
+                    defaultExpandAll: true,
+                    renderAfterExpand: false
+                }
             }
         },
         {
@@ -135,21 +121,16 @@ const openDialog = async (type, payload) => {
             Object.assign(dialogProps, {
                 title: '新增部门'
             })
-            formProps.items.find(item => item.prop === `parentId`).extra.data = rawDeptTree
+            formProps.items.find(item => item.prop === `parentId`).defaultRenderer.props.data
+                = rawDeptTree
             break
         case 'update':
             Object.assign(dialogProps, {
                 title: '编辑部门'
             })
             setFormData({ ...payload })
-            formProps.items.find(item => item.prop === `parentId`).extra.data = filterTreeItems(
-                rawDeptTree,
-                [payload.id]
-            )
-            await nextTick()
-            const parentNode = props.deptList.find(item => item.id === payload.parentId)
-            unref(parentIdTreeSelectRef).treeRef.setCurrentKey(parentNode?.id)
-            unref(parentIdTreeSelectRef).state.inputVal = parentNode?.name
+            formProps.items.find(item => item.prop === `parentId`).defaultRenderer.props.data
+                = filterTreeItems(rawDeptTree, [payload.id])
             break
         default:
             break
@@ -159,14 +140,16 @@ const openDialog = async (type, payload) => {
 const confirmDialog = async () => {
     const { valid } = await validate()
     if (!valid) return
+    const formData = { ...getFormData() }
+    if (typeof formData.parentId !== 'number') formData.parentId = null
     try {
         switch (state.operationType) {
             case 'add':
-                await api.system.dept.addData(getFormData())
+                await api.system.dept.addData(formData)
                 ElMessage.success('添加成功')
                 break
             case 'update':
-                await api.system.dept.updateData(getFormData())
+                await api.system.dept.updateData(formData)
                 ElMessage.success('修改成功')
                 break
             default:
@@ -182,8 +165,7 @@ const confirmDialog = async () => {
 const resetData = () => {
     state.operationType = null
     resetFields()
-    unref(parentIdTreeSelectRef).resetField()
-    formProps.items.find(item => item.prop === `parentId`).extra.data = []
+    formProps.items.find(item => item.prop === `parentId`).defaultRenderer.props.data = []
 }
 
 defineExpose({

@@ -1,37 +1,12 @@
 <template>
     <BaseDialog @register="registerDialog" v-bind="dialogProps">
-        <BaseForm @register="registerForm" v-bind="formProps">
-            <template #parentId="{ formItem, formData }">
-                <BasicTreeSelect
-                    v-model="formData[formItem.prop]"
-                    ref="parentIdTreeSelectRef"
-                    :data="formItem.extra.data"
-                    :props="{
-                        children: 'children',
-                        label: 'name'
-                    }"
-                    :clearable="true"
-                    :highlight-current="true"
-                    node-key="id"
-                    :expand-on-click-node="false"
-                    @node-click="
-                        (data) => {
-                            // 修改表单值
-                            formData[formItem.prop] = data.id
-                            // 修改输入框值
-                            parentIdTreeSelectRef.state.inputVal = data.name
-                        }
-                    "
-                ></BasicTreeSelect>
-            </template>
-        </BaseForm>
+        <BaseForm @register="registerForm" v-bind="formProps"></BaseForm>
     </BaseDialog>
 </template>
 
 <script lang="jsx" setup>
 import { BaseDialog, useDialog, BaseForm, useForm } from 'element-plus-components-lib'
-import BasicTreeSelect from '@/components/BasicTreeSelect/index.vue'
-import { nextTick, reactive, ref, unref } from 'vue'
+import { nextTick, reactive } from 'vue'
 import { filterTreeItems, listToTree } from '@/utils/tree'
 import { cloneDeep } from 'lodash-es'
 import api from '@/api'
@@ -47,8 +22,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['submit'])
-
-const parentIdTreeSelectRef = ref(null)
 
 const state = reactive({
     operationType: null
@@ -93,8 +66,21 @@ const [
         {
             prop: 'parentId',
             label: '上级菜单',
-            extra: {
-                data: []
+            defaultRenderer: {
+                component: 'tree-select',
+                props: {
+                    class: 'w-100%',
+                    data: [],
+                    nodeKey: 'id',
+                    props: {
+                        children: 'children',
+                        label: 'name'
+                    },
+                    clearable: true,
+                    checkStrictly: true,
+                    defaultExpandAll: true,
+                    renderAfterExpand: false
+                }
             }
         },
         {
@@ -154,14 +140,14 @@ const [
                 component: 'select',
                 props: {
                     clearable: true,
-                    style: { width: '100%' }
-                },
-                options: componentMap,
-                optionProps: option => ({
-                    key: option.componentName,
-                    value: option.componentName,
-                    label: option.desc
-                })
+                    style: { width: '100%' },
+                    options: componentMap,
+                    optionProps: option => ({
+                        key: option.componentName,
+                        value: option.componentName,
+                        label: option.desc
+                    })
+                }
             },
             isShow: () => [1].includes(formProps.modelValue.type)
         },
@@ -281,27 +267,23 @@ const openDialog = async (type, payload) => {
     state.operationType = type
     setDialogVisible(true)
     await nextTick()
-    const rawMenuTree = listToTree(cloneDeep(props.menuList))
+    const rawMenuTree = listToTree(cloneDeep(props.menuList.filter(item => item.type !== 2)))
     switch (type) {
         case 'add':
             Object.assign(dialogProps, {
                 title: '新增菜单'
             })
-            formProps.items.find(item => item.prop === `parentId`).extra.data = rawMenuTree
+            formProps.items.find(item => item.prop === `parentId`).defaultRenderer.props.data = rawMenuTree
             break
         case 'update':
             Object.assign(dialogProps, {
                 title: '编辑菜单'
             })
             setFormData({ ...payload })
-            formProps.items.find(item => item.prop === `parentId`).extra.data = filterTreeItems(
+            formProps.items.find(item => item.prop === `parentId`).defaultRenderer.props.data = filterTreeItems(
                 rawMenuTree,
                 [payload.id]
             )
-            await nextTick()
-            const parentNode = props.menuList.find(item => item.id === payload.parentId)
-            unref(parentIdTreeSelectRef).treeRef.setCurrentKey(parentNode?.id)
-            unref(parentIdTreeSelectRef).state.inputVal = parentNode?.name
             break
         default:
             break
@@ -311,10 +293,8 @@ const openDialog = async (type, payload) => {
 const confirmDialog = async () => {
     const { valid } = await validate()
     if (!valid) return
-    const formData = getFormData()
-    if (typeof formData.parentId === 'undefined') {
-        formData.parentId = null
-    }
+    const formData = { ...getFormData() }
+    if (typeof formData.parentId !== 'number') formData.parentId = null
     try {
         switch (state.operationType) {
             case 'add':
@@ -338,8 +318,10 @@ const confirmDialog = async () => {
 const resetData = () => {
     state.operationType = null
     resetFields()
-    unref(parentIdTreeSelectRef).resetField()
-    formProps.items.find(item => item.prop === `parentId`).extra.data = []
+    formProps.modelValue = {
+        type: 0
+    }
+    formProps.items.find(item => item.prop === `parentId`).defaultRenderer.props.data = []
 }
 
 defineExpose({
