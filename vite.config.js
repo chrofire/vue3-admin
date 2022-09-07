@@ -6,6 +6,8 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import Unocss from 'unocss/vite'
+import { presetIcons, presetMini } from 'unocss'
 
 // https://cn.vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -19,6 +21,32 @@ export default defineConfig(({ mode }) => {
             }),
             Components({
                 resolvers: [ElementPlusResolver()]
+            }),
+            Unocss({
+                presets: [
+                    presetMini(),
+                    presetIcons({
+                        extraProperties: {
+                            display: 'inline-block',
+                            'vertical-align': 'middle'
+                        }
+                    })
+                ],
+                variants: [
+                    {
+                        match: s => {
+                            if (s.startsWith('i-')) {
+                                return {
+                                    matcher: s,
+                                    selector: s => {
+                                        return s.startsWith('.') ? `${s.slice(1)},${s}` : s
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ],
+                safelist: []
             })
         ],
         resolve: {

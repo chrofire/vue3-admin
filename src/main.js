@@ -4,6 +4,7 @@ import App from '@/App.vue'
 import pinia from '@/stores'
 import router from '@/router'
 import 'normalize.css'
+import 'uno.css'
 
 const app = createApp(App)
 
