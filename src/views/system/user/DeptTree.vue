@@ -1,21 +1,10 @@
 <template>
     <div class="dept-tree" ref="deptTreeRef">
         <div class="top">
-            <el-input v-model="state.inputVal" placeholder="部门名称" @keyup.enter="getDataList">
-                <template #append>
-                    <el-button :icon="icons.Search" @click="getDataList" />
-                </template>
-            </el-input>
+            <el-input v-model="state.inputVal" placeholder="部门名称"></el-input>
             <div class="btn">
                 <el-dropdown>
-                    <ElIconRender
-                        name="MoreFilled"
-                        :width="22"
-                        color="var(--el-color-info)"
-                        :style="{
-                            cursor: 'pointer'
-                        }"
-                    ></ElIconRender>
+                    <i class="i-ep-more-filled w-22px h-22px text-$el-color-info cursor-pointer"></i>
                     <template #dropdown>
                         <el-dropdown-menu>
                             <el-dropdown-item @click="() => setExpandAllNode(true)">
@@ -33,7 +22,6 @@
             <el-scrollbar>
                 <el-tree
                     ref="treeRef"
-                    :data="state.data"
                     :props="{
                         children: 'children',
                         label: 'name'
@@ -42,8 +30,9 @@
                     :highlight-current="true"
                     node-key="id"
                     :expand-on-click-node="false"
-                    :default-expand-all="state.expandAll"
+                    :default-expand-all="true"
                     @node-click="nodeClick"
+                    :filter-node-method="filterNode"
                     v-bind="attrs"
                 />
             </el-scrollbar>
@@ -52,11 +41,8 @@
 </template>
 
 <script setup>
-import { h, onMounted, reactive, ref, unref, useAttrs } from 'vue'
-import ElIconRender from '@/components/ElIconRender/index.vue'
-import api from '@/api'
+import { reactive, ref, unref, useAttrs, watch } from 'vue'
 import { useLoading } from '@/hooks/useLoading'
-import { listToTree } from '@/utils/tree'
 
 const attrs = useAttrs()
 const emit = defineEmits(['nodeChange'])
@@ -66,14 +52,9 @@ const treeRef = ref(null)
 
 const loading = useLoading({ target: deptTreeRef })
 
-const icons = {
-    Search: h(ElIconRender, { name: 'Search' })
-}
-
 const state = reactive({
     inputVal: '',
-    currentNode: null,
-    data: []
+    currentNode: null
 })
 
 const setExpandAllNode = data => {
@@ -93,31 +74,19 @@ const nodeClick = data => {
     emit('nodeChange', state.currentNode)
 }
 
-const getDataList = async () => {
-    loading.start()
-    try {
-        const params = {
-            name: state.inputVal,
-            state: 0
-        }
-        const { list } = await api.system.dept.list(params)
-        state.data = listToTree(list)
-        emit('nodeChange', state.currentNode)
-    } catch (error) {
-        catchErrorMessage(error)
-    } finally {
-        loading.stop()
-    }
-}
-
-onMounted(() => {
-    getDataList()
+watch(() => state.inputVal, val => {
+    treeRef.value.filter(val)
 })
+
+const filterNode = (value, data) => {
+    if (!value) return true
+    return data.name.includes(value)
+}
 
 defineExpose({
     state,
     treeRef,
-    getDataList
+    loading
 })
 </script>
 

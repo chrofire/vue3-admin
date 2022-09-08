@@ -10,6 +10,13 @@ import { nextTick, reactive } from 'vue'
 import api from '@/api'
 import { stateMap } from './constant'
 
+const props = defineProps({
+    treeData: {
+        type: Array,
+        default: () => []
+    }
+})
+
 const emit = defineEmits(['submit'])
 
 const state = reactive({
@@ -163,6 +170,26 @@ const [
             }
         },
         {
+            prop: 'deptId',
+            label: '部门',
+            defaultRenderer: {
+                component: 'tree-select',
+                props: {
+                    class: 'w-100%',
+                    data: [],
+                    nodeKey: 'id',
+                    props: {
+                        children: 'children',
+                        label: 'name'
+                    },
+                    clearable: true,
+                    checkStrictly: true,
+                    defaultExpandAll: true,
+                    renderAfterExpand: false
+                }
+            }
+        },
+        {
             prop: 'remark',
             label: '备注',
             defaultRenderer: {
@@ -177,6 +204,7 @@ const openDialog = async (type, payload) => {
     state.operationType = type
     setDialogVisible(true)
     await nextTick()
+    formProps.items.find(item => item.prop === `deptId`).defaultRenderer.props.data = props.treeData
     await getRoleList()
     switch (type) {
         case 'add':
@@ -199,14 +227,16 @@ const openDialog = async (type, payload) => {
 const confirmDialog = async () => {
     const { valid } = await validate()
     if (!valid) return
+    const formData = { ...getFormData() }
+    if (typeof formData.deptId !== 'number') formData.deptId = null
     try {
         switch (state.operationType) {
             case 'add':
-                await api.system.user.addData(getFormData())
+                await api.system.user.addData(formData)
                 ElMessage.success('添加成功')
                 break
             case 'update':
-                await api.system.user.updateData(getFormData())
+                await api.system.user.updateData(formData)
                 ElMessage.success('修改成功')
                 break
             default:

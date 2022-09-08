@@ -1,7 +1,7 @@
 <template>
     <div class="main-container">
         <div class="left-container">
-            <DeptTree ref="DeptTreeRef" @nodeChange="getDataList"></DeptTree>
+            <DeptTree ref="DeptTreeRef" :data="treeData" @nodeChange="getDataList"></DeptTree>
         </div>
         <div class="right-container">
             <div class="search-container">
@@ -27,7 +27,7 @@
                 ></BasePagination>
             </div>
         </div>
-        <UserContentDialog ref="UserContentDialogRef" @submit="getDataList"></UserContentDialog>
+        <UserContentDialog ref="UserContentDialogRef" @submit="getDataList" :treeData="treeData"></UserContentDialog>
     </div>
 </template>
 
@@ -40,11 +40,12 @@ export default {
 <script lang="jsx" setup>
 import { BaseTable, useTable, BaseForm, useForm, BasePagination } from 'element-plus-components-lib'
 import UserContentDialog from './UserContentDialog.vue'
-import { ref, unref } from 'vue'
+import { onMounted, ref, unref } from 'vue'
 import api from '@/api'
 import { useLoading } from '@/hooks/useLoading'
 import { stateMap } from './constant'
 import DeptTree from './DeptTree.vue'
+import { listToTree } from '@/utils/tree'
 
 const tableContainer = ref(null)
 const UserContentDialogRef = ref(null)
@@ -193,12 +194,28 @@ const [registerTable, { componentProps: tableProps }] = useTable({
     }
 })
 
+const treeData = ref([])
+
+const getDeptTreeList = async () => {
+    unref(DeptTreeRef).loading.start()
+    try {
+        const params = {
+            name: unref(DeptTreeRef).state.inputVal,
+            state: 0
+        }
+        const { list } = await api.system.dept.list(params)
+        treeData.value = listToTree(list)
+    } catch (error) {
+        catchErrorMessage(error)
+    } finally {
+        unref(DeptTreeRef).loading.stop()
+    }
+}
+
 const getDataList = async () => {
     loading.start()
     try {
-        const deptId = unref(DeptTreeRef).state.currentNode
-            ? unref(DeptTreeRef).state.currentNode.id
-            : undefined
+        const deptId = unref(DeptTreeRef).state.currentNode?.id
         const params = {
             deptId,
             ...tableProps.pagination,
@@ -229,6 +246,11 @@ const deleteData = async payload => {
         catchErrorMessage(error)
     }
 }
+
+onMounted(() => {
+    getDeptTreeList()
+    getDataList()
+})
 </script>
 
 <style lang="scss" scoped>
