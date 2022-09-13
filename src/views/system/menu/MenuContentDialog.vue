@@ -11,7 +11,7 @@ import { filterTreeItems, listToTree } from '@/utils/tree'
 import { cloneDeep } from 'lodash-es'
 import api from '@/api'
 import { booleanMap, stateMap, typeMap } from './constant'
-import ElIconSelect from '@/components/ElIconSelect/index.vue'
+import IconifySelect from '@/components/IconifySelect/index.vue'
 import componentMap from '@/router/componentMap'
 
 const props = defineProps({
@@ -106,11 +106,10 @@ const [
             },
             defaultRenderer ({ formItem, formData }) {
                 return (
-                    <ElIconSelect
+                    <IconifySelect
                         v-model={formData[formItem.prop]}
                         clearable
-                        style="width: 100%;"
-                    ></ElIconSelect>
+                    ></IconifySelect>
                 )
             },
             isShow: () => [0, 1].includes(formProps.modelValue.type)

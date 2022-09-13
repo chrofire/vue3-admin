@@ -1,24 +1,19 @@
 <template>
     <div
-        class="el-icon-select"
-        v-click-outside:[popperPaneRef]="handleCloseSelectContent"
+        class="iconify-select"
+        v-click-outside:[popperPaneRef]="handleClickOutside"
         @click.stop="toggleSelectContent"
-        v-bind="{
-            style: attrs.style,
-            class: attrs.class
-        }"
+        v-bind="attrs"
     >
         <el-tooltip
             ref="tooltipRef"
-            v-model:visible="state.visible"
-            :popper-class="styles[`select-popper`]"
+            :visible="state.visible"
+            :popper-class="styles[`iconify-select__popper`]"
             placement="bottom-start"
-            :fallback-placements="['bottom-start', 'top-start', 'right', 'left']"
             effect="light"
             pure
-            trigger="click"
             transition="el-zoom-in-top"
-            :stop-popper-mouse-event="false"
+            :stop-popper-mouse-event="true"
             :gpu-acceleration="false"
             persistent
         >
@@ -29,7 +24,7 @@
                     :readonly="true"
                     :clearable="true"
                     :class="[
-                        `select-input`,
+                        `iconify-select__input`,
                         { 'is-focus': state.visible && validateState !== `error` }
                     ]"
                     @mouseenter="state.inputHovering = true"
@@ -38,20 +33,23 @@
                     :disabled="disabled"
                     :placeholder="placeholder"
                 >
+                    <template #prefix>
+                        <i :class="modelValue"> </i>
+                    </template>
                     <template #suffix>
-                        <el-icon
+                        <i
                             v-show="!showClose"
-                            :class="[`suffix-icon`, { 'is-reverse': state.visible }]"
-                        >
-                            <ElIconsModule.ArrowDown></ElIconsModule.ArrowDown>
-                        </el-icon>
-                        <el-icon
+                            :class="[
+                                'i-ep-arrow-down',
+                                'suffix-icon',
+                                { 'is-reverse': state.visible }
+                            ]"
+                        ></i>
+                        <i
                             v-show="showClose"
-                            :class="[`suffix-icon`]"
+                            class="i-ep-circle-close"
                             @click.stop="resetField"
-                        >
-                            <ElIconsModule.CircleClose></ElIconsModule.CircleClose>
-                        </el-icon>
+                        ></i>
                     </template>
                 </el-input>
             </template>
@@ -62,32 +60,21 @@
                         :max-height="maxContentHeight"
                         :view-style="[{ margin: `8px 0` }]"
                     >
-                        <slot>
+                        <div
+                            class="iconify-select__icon-list"
+                            :style="{
+                                minWidth: `${state.inputWidth}px`
+                            }"
+                        >
                             <div
-                                class="icon-list"
-                                :style="{
-                                    minWidth: `${state.inputWidth}px`
-                                }"
+                                :class="['icon-item', { 'is-current': modelValue === item }]"
+                                v-for="item in epIconList"
+                                :key="item"
+                                @click.stop="handleSelect(item)"
                             >
-                                <div
-                                    class="icon-item"
-                                    v-for="icon in ElIconList"
-                                    :key="icon.name"
-                                    @click="handleSelect(icon.name)"
-                                    :class="{
-                                        current: modelValue === icon.name
-                                    }"
-                                >
-                                    <ElIconWrapper
-                                        v-bind="{
-                                            icon,
-                                            size: 25,
-                                            color: 'var(--el-input-text-color,var(--el-text-color-regular))'
-                                        }"
-                                    ></ElIconWrapper>
-                                </div>
+                                <i :class="[item, 'text-25px', 'text-$el-color-info-dark-2']"></i>
                             </div>
-                        </slot>
+                        </div>
                     </el-scrollbar>
                 </div>
             </template>
@@ -97,30 +84,20 @@
 
 <script>
 export default {
-    name: 'ElIconSelect',
-    inheritAttrs: false
+    name: 'IconifySelect'
 }
 </script>
 
 <script setup>
-import { computed, h, nextTick, reactive, ref, unref, useAttrs, useCssModule, watch } from 'vue'
-import * as ElIconsModule from '@element-plus/icons-vue'
-import { ElIcon, useFormItem } from 'element-plus'
+import { computed, nextTick, reactive, ref, unref, useAttrs, useCssModule, watch } from 'vue'
+import { useDisabled, useFormItem } from 'element-plus'
 import { debugWarn } from 'element-plus/lib/utils/index'
 import { ClickOutside as vClickOutside } from 'element-plus/lib/directives/index'
 
-const ElIconList = Object.values(ElIconsModule)
-
-const ElIconWrapper = {
-    name: 'ElIconWrapper',
-    inheritAttrs: false,
-    props: {
-        icon: Object
-    },
-    render () {
-        return h(ElIcon, this.$attrs, () => this.icon?.render())
-    }
-}
+import * as epIcons from '@iconify-json/ep'
+const epIconList = Object.keys(epIcons.icons.icons).map(
+    name => `i-${epIcons.icons.prefix}-${name}`
+)
 
 const tooltipRef = ref(null)
 const scrollbarRef = ref(null)
@@ -133,6 +110,7 @@ const attrs = useAttrs()
 
 const props = defineProps({
     modelValue: {
+        type: String,
         default: () => undefined
     },
     clearable: {
@@ -170,19 +148,20 @@ const state = reactive({
 
 const handleSelect = name => {
     emit('update:modelValue', name)
+    handleClickOutside()
 }
 
-const { form, formItem } = useFormItem()
+const { formItem } = useFormItem()
 
 const validateState = computed(() => formItem?.validateState || '')
-const selectDisabled = computed(() => props.disabled || form?.disabled)
+const selectDisabled = useDisabled()
 
 const toggleSelectContent = () => {
     if (unref(selectDisabled)) return
     state.visible = !state.visible
 }
 
-const handleCloseSelectContent = () => {
+const handleClickOutside = () => {
     state.visible = false
 }
 
@@ -193,7 +172,7 @@ const selectContentStyle = computed(() => {
     }
 })
 
-const initInputWidth = () => {
+const refreshInputWidth = () => {
     const inputRect = unref(inputRef).$el.getBoundingClientRect()
     state.inputWidth = inputRect.width - 2
 }
@@ -201,9 +180,10 @@ const initInputWidth = () => {
 watch(
     () => state.visible,
     async () => {
-        emit('visible-change', state.visible)
         await nextTick()
-        initInputWidth()
+        emit('visible-change', state.visible)
+        inputRef?.value?.blur()
+        refreshInputWidth()
     },
     {
         immediate: true
@@ -222,7 +202,7 @@ watch(
     () => props.modelValue,
     () => {
         if (props.validateEvent) {
-            if(props.modelValue === null) return
+            if (props.modelValue === null) return
             formItem?.validate?.('change').catch(err => debugWarn(err))
         }
     }
@@ -238,12 +218,17 @@ defineExpose(exposeData)
 </script>
 
 <style lang="scss" scoped>
-.select-input {
+.iconify-select {
+    display: inline-flex;
+    width: 100%;
+}
+.iconify-select__input {
     :deep() {
         .el-input__suffix-inner {
-            display: flex;
-            align-items: center;
             cursor: pointer;
+            & > i {
+                margin-left: 8px;
+            }
         }
         .el-input__inner {
             cursor: pointer;
@@ -268,7 +253,7 @@ defineExpose(exposeData)
         transform: rotate(-180deg);
     }
 }
-.icon-list {
+.iconify-select__icon-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, calc(25px + 8px * 2));
     justify-content: center;
@@ -277,7 +262,7 @@ defineExpose(exposeData)
         padding: 8px;
         cursor: pointer;
         transition: background-color 0.3s;
-        &.current {
+        &.is-current {
             background-color: #e6f7ff;
         }
     }
@@ -285,7 +270,7 @@ defineExpose(exposeData)
 </style>
 
 <style lang="scss" module>
-.select-popper {
+.iconify-select__popper {
     background: var(--el-color-white);
     border: 1px solid var(--el-border-color-light);
     box-shadow: var(--el-box-shadow-light);

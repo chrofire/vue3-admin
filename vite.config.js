@@ -8,6 +8,7 @@ import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import Unocss from 'unocss/vite'
 import { presetIcons, presetMini } from 'unocss'
+import * as epIcons from '@iconify-json/ep'
 
 // https://cn.vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -46,7 +47,9 @@ export default defineConfig(({ mode }) => {
                         }
                     }
                 ],
-                safelist: []
+                safelist: [
+                    ...Object.keys(epIcons.icons.icons).map(name => `i-${epIcons.icons.prefix}-${name}`)
+                ]
             })
         ],
         resolve: {
