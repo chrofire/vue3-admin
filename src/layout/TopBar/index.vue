@@ -1,7 +1,7 @@
 <template>
     <div class="top-bar">
         <div class="breadcrumb">
-            <el-breadcrumb :separator-icon="ArrowRight">
+            <el-breadcrumb separator-icon="i-ep-arrow-right">
                 <el-breadcrumb-item
                     v-for="item in route?.meta?.breadcrumb || []"
                     :key="item.name"
@@ -29,7 +29,6 @@
 
 <script setup>
 import { useSystemStore } from '@/stores/system.js'
-import { ArrowRight } from '@element-plus/icons-vue'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import UpdatePasswordDialog from './UpdatePasswordDialog.vue'

@@ -3,7 +3,6 @@ import { ElMenu, ElMenuItem, ElScrollbar, ElSubMenu } from 'element-plus'
 import { defineComponent, h } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useSystemStore } from '@/stores/system.js'
-import * as ElIconsModule from '@element-plus/icons-vue'
 
 export default defineComponent({
     name: 'SideBar',
@@ -14,7 +13,7 @@ export default defineComponent({
 
         const genTitle = item => {
             return h('div', { class: 'item-content' }, [
-                h('div', { class: 'item-icon' }, ElIconsModule[item.meta.icon]?.render()),
+                h('div', { class: ['item-icon', item.meta.icon] }),
                 h('div', { class: 'item-label' }, item.meta.name)
             ])
         }
@@ -84,12 +83,10 @@ export default defineComponent({
 }
 .item-content {
     display: flex;
+    align-items: center;
     .item-icon {
         width: 20px;
         margin-right: 3px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
     }
 }
 </style>
