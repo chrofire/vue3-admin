@@ -13,10 +13,7 @@
                         class="close"
                         v-if="!(tagBarStore.tagList.length === 1 && route.name === `首页`)"
                     >
-                        <ElIconRender
-                            name="Close"
-                            @click.prevent="handleClose(item)"
-                        ></ElIconRender>
+                        <i class="i-ep-close" @click.prevent="handleClose(item)"></i>
                     </div>
                 </div>
             </div>
@@ -28,7 +25,6 @@
 import { useTagBarStore } from '@/stores/tagBar.js'
 import { nextTick, ref, unref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import ElIconRender from '@/components/ElIconRender/index.vue'
 
 const scrollbarRef = ref(null)
 const tagBarStore = useTagBarStore()
