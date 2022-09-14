@@ -41,6 +41,7 @@ const systemStore = useSystemStore()
 <style lang="scss" scoped>
 .top-bar {
     height: 50px;
+    border-bottom: solid 1px var(--el-menu-border-color);
     display: flex;
     align-items: center;
     justify-content: space-between;

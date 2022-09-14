@@ -1,9 +1,17 @@
 <template>
     <div class="main-layout">
         <div class="main-layout-left">
-            <div class="top">title</div>
-            <div class="bottom">
+            <div class="top" :style="{
+                flexDirection: systemStore.sideBarCollapse ? 'column' : 'row'
+            }">
+                <div>管理</div>
+                <div>系统</div>
+            </div>
+            <div class="middle">
                 <SideBar></SideBar>
+            </div>
+            <div class="bottom" @click="systemStore.toggleSideBarCollapse()">
+                <i class="i-ep-switch"></i>
             </div>
         </div>
         <div class="main-layout-right">
@@ -28,8 +36,10 @@ import SideBar from './SideBar/index.vue'
 import TopBar from './TopBar/index.vue'
 import TagBar from './TagBar/index.vue'
 import { useTagBarStore } from '@/stores/tagBar.js'
+import { useSystemStore } from '@/stores/system.js'
 
 const tagBarStore = useTagBarStore()
+const systemStore = useSystemStore()
 </script>
 
 <style lang="scss" scoped>
@@ -40,17 +50,31 @@ const tagBarStore = useTagBarStore()
     .main-layout-left {
         display: flex;
         flex-flow: column nowrap;
+        border-right: solid 1px var(--el-menu-border-color);
         .top {
             height: 50px;
             display: flex;
-            justify-content: center;
             align-items: center;
-            background-color: #8c8c8c;
-            color: #fff;
+            justify-content: center;
+            color: var(--el-text-color-secondary);
+            border-bottom: solid 1px var(--el-menu-border-color);
         }
-        .bottom {
+        .middle {
             flex: 1 0;
             min-height: 0;
+        }
+        .bottom {
+            height: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-top: 1px solid var(--el-menu-border-color);
+            transition: all 0.3s;
+            cursor: pointer;
+            &:hover {
+                color: var(--el-color-primary);
+                background-color: var(--el-color-primary-light-9);
+            }
         }
     }
     .main-layout-right {

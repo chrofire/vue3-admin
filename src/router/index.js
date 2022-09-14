@@ -37,6 +37,7 @@ export const HomeRoute = {
         fullPath: '/home',
         componentName: 'Home',
         name: '首页',
+        icon: 'i-ep-home-filled',
         type: 1,
         isExternalLink: false,
         isShow: true,

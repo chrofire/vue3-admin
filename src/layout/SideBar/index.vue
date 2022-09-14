@@ -1,5 +1,5 @@
 <script>
-import { ElMenu, ElMenuItem, ElScrollbar, ElSubMenu } from 'element-plus'
+import { ElIcon, ElMenu, ElMenuItem, ElScrollbar, ElSubMenu } from 'element-plus'
 import { defineComponent, h } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useSystemStore } from '@/stores/system.js'
@@ -11,12 +11,10 @@ export default defineComponent({
         const router = useRouter()
         const route = useRoute()
 
-        const genTitle = item => {
-            return h('div', { class: 'item-content' }, [
-                h('div', { class: ['item-icon', item.meta.icon] }),
-                h('div', { class: 'item-label' }, item.meta.name)
-            ])
+        const genSubMenuTitle = item => {
+            return [h(ElIcon, { class: [item.meta.icon] }), h('span', item.meta.name)]
         }
+
         const genMenuTree = tree => {
             return tree.map(item => {
                 // 目录
@@ -27,8 +25,8 @@ export default defineComponent({
                             index: item.meta.name
                         },
                         {
-                            title: () => genTitle(item),
-                            default: () => genMenuTree(item.children)
+                            default: () => genMenuTree(item.children),
+                            title: () => genSubMenuTitle(item)
                         }
                     )
                 }
@@ -50,7 +48,8 @@ export default defineComponent({
                         }
                     },
                     {
-                        title: () => genTitle(item)
+                        default: () => h(ElIcon, { class: [item.meta.icon] }),
+                        title: () => h('span', item.meta.name)
                     }
                 )
             })
@@ -59,13 +58,15 @@ export default defineComponent({
         return () => {
             return h(
                 'div',
-                { class: 'side-bar' },
+                { class: ['side-bar', { 'is-expand': !systemStore.sideBarCollapse }] },
                 h(ElScrollbar, {}, () =>
                     h(
                         ElMenu,
                         {
                             router: false,
-                            defaultActive: route.meta.name
+                            defaultActive: route.meta.name,
+                            collapse: systemStore.sideBarCollapse,
+                            collapseTransition: false
                         },
                         () => genMenuTree(systemStore.menuTree)
                     )
@@ -78,15 +79,20 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .side-bar {
-    width: 200px;
     height: 100%;
-}
-.item-content {
-    display: flex;
-    align-items: center;
-    .item-icon {
-        width: 20px;
-        margin-right: 3px;
+    transition: width 0.4s;
+    width: calc(var(--el-menu-icon-width) + var(--el-menu-base-level-padding) * 2);
+    &.is-expand {
+        width: 220px;
+    }
+    :deep() {
+        .el-scrollbar__view {
+            height: 100%;
+        }
+        .el-menu {
+            height: 100%;
+            border-right: none;
+        }
     }
 }
 </style>

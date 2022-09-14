@@ -16,7 +16,8 @@ export const useSystemStore = defineStore('system', {
         rawMenuList: [],
         menuTree: [],
         permissionList: [],
-        addRouteList: []
+        addRouteList: [],
+        sideBarCollapse: false
     }),
     actions: {
         async login (params) {
@@ -51,6 +52,9 @@ export const useSystemStore = defineStore('system', {
             this.removeRoutes()
             this.$reset()
             tagBarStore.$reset()
+        },
+        toggleSideBarCollapse () {
+            return this.sideBarCollapse = !this.sideBarCollapse
         }
     }
 })
