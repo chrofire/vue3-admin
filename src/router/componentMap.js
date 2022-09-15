@@ -18,5 +18,10 @@ export default [
         componentName: 'Menu',
         desc: '菜单管理',
         component: () => import('@/views/system/menu/index.vue')
+    },
+    {
+        componentName: 'Cropper',
+        desc: '图片裁剪',
+        component: () => import('@/views/components/cropper/index.vue')
     }
 ]
