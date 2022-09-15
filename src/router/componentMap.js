@@ -20,6 +20,11 @@ export default [
         component: () => import('@/views/system/menu/index.vue')
     },
     {
+        componentName: 'Chart',
+        desc: '图表',
+        component: () => import('@/views/components/chart/index.vue')
+    },
+    {
         componentName: 'Cropper',
         desc: '图片裁剪',
         component: () => import('@/views/components/cropper/index.vue')

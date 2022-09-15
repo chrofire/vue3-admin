@@ -88,7 +88,7 @@ const [
             label: '菜单名称',
             rules: [
                 { required: true, message: '菜单名称不能为空', trigger: 'blur' },
-                { min: 3, message: '菜单名称长度最短3个字符', trigger: 'blur' },
+                { min: 1, message: '菜单名称长度最短1个字符', trigger: 'blur' },
                 { max: 20, message: '菜单名称长度最长20个字符', trigger: 'blur' }
             ],
             col: {
