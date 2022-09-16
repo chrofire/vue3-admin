@@ -1,60 +1,55 @@
 /**
- * 构建树
- * @param {array} data 构建数据数组
- * @param {string} id id
- * @param {string} parentId 父级id
- * @param {string} childrenName childrenName
+ * 数组 转 树
+ * @param {array} data 数组
+ * @param {object} options 配置项
  * @returns {array}
  */
-export function listToTree (
-    data,
-    id = `id`,
-    parentId = `parentId`,
-    childrenName = `children`
-) {
+export function listToTree (data, options = {}) {
+    const { idKey = `id`, parentIdKey = `parentId`, childrenKey = `children` } = options
+
     const map = {}
-    data.forEach(item => {
-        item[childrenName] = []
-        map[item[id]] = item
+
+    data.forEach(node => {
+        // 初始化 node children 为 空数组
+        node[childrenKey] = []
+        map[node[idKey]] = node
     })
-    const result = []
-    data.forEach(item => {
-        const parent = map[item[parentId]]
+
+    const tree = []
+
+    data.forEach(node => {
+        const parent = map[node[parentIdKey]]
         if (parent) {
-            parent[childrenName].push(item)
+            parent[childrenKey].push(node)
         } else {
-            result.push(item)
+            tree.push(node)
         }
     })
-    return result
+
+    return tree
 }
 
 /**
- * 过滤树指定节点及其子节点
- * @param {array} tree 树
- * @param {array} idList 过滤节点ids
- * @param {object} opts 配置项
+ * 过滤掉树指定节点及其子节点
+ * @param {array} data 树
+ * @param {array} idList 需要过滤掉的节点数组
+ * @param {object} options 配置项
  * @returns {array}
  */
-export function filterTreeItems (
-    tree,
-    idList = [],
-    opts = {
-        id: `id`,
-        childrenName: `children`
-    }
-) {
-    const res = tree.map(item => {
-        if (idList.includes(item[opts.id])) {
+export function filterTreeNodes (data, idList = [], options = {}) {
+    const { idKey = `id`, childrenKey = `children` } = options
+
+    const list = data.map(node => {
+        if (idList.includes(node[idKey])) {
             return null
         }
-        
-        if (!item[opts.childrenName]) return item
+
+        if (!node[childrenKey]) return node
 
         return {
-            ...item,
-            [opts.childrenName]: filterTreeItems(item[opts.childrenName], idList, opts)
+            ...node,
+            [childrenKey]: filterTreeNodes(node[childrenKey], idList, options)
         }
     })
-    return res.filter(Boolean)
+    return list.filter(Boolean)
 }

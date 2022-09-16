@@ -7,7 +7,7 @@
 <script setup>
 import { BaseDialog, useDialog, BaseForm, useForm } from 'element-plus-components-lib'
 import { nextTick, reactive } from 'vue'
-import { filterTreeItems, listToTree } from '@/utils/tree'
+import { filterTreeNodes, listToTree } from '@/utils/tree'
 import { cloneDeep } from 'lodash-es'
 import api from '@/api'
 import { stateMap } from './constant'
@@ -130,7 +130,7 @@ const openDialog = async (type, payload) => {
             })
             setFormData({ ...payload })
             formProps.items.find(item => item.prop === `parentId`).defaultRenderer.props.data
-                = filterTreeItems(rawDeptTree, [payload.id])
+                = filterTreeNodes(rawDeptTree, [payload.id])
             break
         default:
             break

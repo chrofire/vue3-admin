@@ -7,7 +7,7 @@
 <script lang="jsx" setup>
 import { BaseDialog, useDialog, BaseForm, useForm } from 'element-plus-components-lib'
 import { nextTick, reactive } from 'vue'
-import { filterTreeItems, listToTree } from '@/utils/tree'
+import { filterTreeNodes, listToTree } from '@/utils/tree'
 import { cloneDeep } from 'lodash-es'
 import api from '@/api'
 import { booleanMap, stateMap, typeMap } from './constant'
@@ -279,7 +279,7 @@ const openDialog = async (type, payload) => {
                 title: '编辑菜单'
             })
             setFormData({ ...payload })
-            formProps.items.find(item => item.prop === `parentId`).defaultRenderer.props.data = filterTreeItems(
+            formProps.items.find(item => item.prop === `parentId`).defaultRenderer.props.data = filterTreeNodes(
                 rawMenuTree,
                 [payload.id]
             )
