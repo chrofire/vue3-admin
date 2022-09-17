@@ -1,22 +1,22 @@
 <template>
-    <div class="main-container">
-        <div class="search-container">
+    <div class="base-page-container">
+        <div class="base-search-container">
             <BaseForm @register="registerSearchForm" v-bind="searchFormProps"></BaseForm>
         </div>
-        <div class="operate-list">
+        <div class="base-operate-list">
             <el-button type="primary" @click="RoleContentDialogRef.openDialog('add')" v-permission="[`system:role:add`]">
                 新增
             </el-button>
             <el-button type="primary" @click="getDataList" v-permission="[`system:role:pageList`]">刷新</el-button>
         </div>
-        <div class="table-container" ref="tableContainer">
+        <div class="base-table-container" ref="tableContainer">
             <BaseTable
                 ref="BaseTableRef"
                 @register="registerTable"
                 v-bind="tableProps"
             ></BaseTable>
         </div>
-        <div class="pagination-container">
+        <div class="base-pagination-container">
             <BasePagination
                 :pagination="tableProps.pagination"
                 @change="getDataList"
@@ -200,20 +200,4 @@ const deleteData = async payload => {
 }
 </script>
 
-<style lang="scss" scoped>
-.main-container {
-    display: flex;
-    flex-flow: column nowrap;
-    .table-container {
-        flex: 1 0;
-        min-height: 0;
-    }
-    .pagination-container {
-        display: flex;
-        justify-content: flex-end;
-        background-color: #fff;
-        padding: 6px;
-        margin-top: 6px;
-    }
-}
-</style>
+<style lang="scss" scoped></style>

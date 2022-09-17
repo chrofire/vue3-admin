@@ -1,26 +1,26 @@
 <template>
-    <div class="main-container">
-        <div class="left-container">
+    <div class="base-page-container flex-row!">
+        <div class="w-200px mr-$base-gap">
             <DeptTree ref="DeptTreeRef" :data="treeData" @nodeChange="getDataList"></DeptTree>
         </div>
-        <div class="right-container">
-            <div class="search-container">
+        <div class="flex flex-col flex-1 min-w-0">
+            <div class="base-search-container">
                 <BaseForm @register="registerSearchForm" v-bind="searchFormProps"></BaseForm>
             </div>
-            <div class="operate-list">
+            <div class="base-operate-list">
                 <el-button type="primary" @click="UserContentDialogRef.openDialog('add')" v-permission="[`system:user:add`]">
                     新增
                 </el-button>
                 <el-button type="primary" @click="getDataList" v-permission="[`system:user:pageList`]">刷新</el-button>
             </div>
-            <div class="table-container" ref="tableContainer">
+            <div class="base-table-container" ref="tableContainer">
                 <BaseTable
                     ref="BaseTableRef"
                     @register="registerTable"
                     v-bind="tableProps"
                 ></BaseTable>
             </div>
-            <div class="pagination-container">
+            <div class="base-pagination-container">
                 <BasePagination
                     :pagination="tableProps.pagination"
                     @change="getDataList"
@@ -252,28 +252,28 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.main-container {
-    display: flex;
-    .left-container {
-        width: 200px;
-        margin-right: 10px;
-    }
-    .right-container {
-        flex: 1 0;
-        min-width: 0;
-        display: flex;
-        flex-flow: column nowrap;
-        .table-container {
-            flex: 1 0;
-            min-height: 0;
-        }
-        .pagination-container {
-            display: flex;
-            justify-content: flex-end;
-            background-color: #fff;
-            padding: 6px;
-            margin-top: 6px;
-        }
-    }
-}
+// .base-page-container {
+//     display: flex;
+//     .left-container {
+//         width: 200px;
+//         margin-right: 10px;
+//     }
+//     .right-container {
+//         flex: 1 0;
+//         min-width: 0;
+//         display: flex;
+//         flex-flow: column nowrap;
+//         .base-table-container {
+//             flex: 1 0;
+//             min-height: 0;
+//         }
+//         .base-pagination-container {
+//             display: flex;
+//             justify-content: flex-end;
+//             background-color: #fff;
+//             padding: 6px;
+//             margin-top: 6px;
+//         }
+//     }
+// }
 </style>

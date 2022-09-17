@@ -1,15 +1,15 @@
 <template>
-    <div class="main-container">
-        <div class="search-container">
+    <div class="base-page-container">
+        <div class="base-search-container">
             <BaseForm @register="registerSearchForm" v-bind="searchFormProps"></BaseForm>
         </div>
-        <div class="operate-list">
+        <div class="base-operate-list">
             <el-button type="primary" @click="DeptContentDialogRef.openDialog('add')" v-permission="[`system:dept:add`]">
                 新增
             </el-button>
             <el-button type="primary" @click="getDataList" v-permission="[`system:dept:list`]">刷新</el-button>
         </div>
-        <div class="table-container" ref="tableContainer">
+        <div class="base-table-container" ref="tableContainer">
             <BaseTable
                 ref="BaseTableRef"
                 @register="registerTable"
@@ -211,13 +211,4 @@ const deleteData = async payload => {
 }
 </script>
 
-<style lang="scss" scoped>
-.main-container {
-    display: flex;
-    flex-flow: column nowrap;
-    .table-container {
-        flex: 1 0;
-        min-height: 0;
-    }
-}
-</style>
+<style lang="scss" scoped></style>
