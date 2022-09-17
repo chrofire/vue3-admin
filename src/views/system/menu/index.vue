@@ -4,10 +4,10 @@
             <BaseForm @register="registerSearchForm" v-bind="searchFormProps"></BaseForm>
         </div>
         <div class="base-operate-list">
-            <el-button type="primary" @click="MenuContentDialogRef.openDialog('add')" v-permission="[`system:menu:add`]">
+            <el-button type="primary" plain @click="MenuContentDialogRef.openDialog('add')" v-permission="[`system:menu:add`]">
                 新增
             </el-button>
-            <el-button type="primary" @click="getDataList" v-permission="[`system:menu:list`]">刷新</el-button>
+            <el-button type="success" plain @click="getDataList" v-permission="[`system:menu:list`]">刷新</el-button>
         </div>
         <div class="base-table-container" ref="tableContainer">
             <BaseTable
@@ -94,9 +94,10 @@ const [
             },
             defaultRenderer: ({ formItem, formData }) => {
                 return (
-                    <div class="btn-list">
+                    <div class="base-search-operate-list">
                         <el-button
                             type="primary"
+                            plain
                             onClick={() => getDataList()}
                             v-permission={[[`system:menu:list`]]}
                         >
@@ -172,6 +173,7 @@ const [registerTable, { componentProps: tableProps }] = useTable({
                     <>
                         <el-button
                             type="primary"
+                            link
                             onClick={() => unref(MenuContentDialogRef).openDialog('update', row)}
                             v-permission={[[`system:menu:update`]]}
                         >
@@ -179,6 +181,7 @@ const [registerTable, { componentProps: tableProps }] = useTable({
                         </el-button>
                         <el-button
                             type="danger"
+                            link
                             onClick={() => deleteData(row)}
                             v-permission={[[`system:menu:delete`]]}
                         >

@@ -8,10 +8,10 @@
                 <BaseForm @register="registerSearchForm" v-bind="searchFormProps"></BaseForm>
             </div>
             <div class="base-operate-list">
-                <el-button type="primary" @click="UserContentDialogRef.openDialog('add')" v-permission="[`system:user:add`]">
+                <el-button type="primary" plain @click="UserContentDialogRef.openDialog('add')" v-permission="[`system:user:add`]">
                     新增
                 </el-button>
-                <el-button type="primary" @click="getDataList" v-permission="[`system:user:pageList`]">刷新</el-button>
+                <el-button type="success" plain @click="getDataList" v-permission="[`system:user:pageList`]">刷新</el-button>
             </div>
             <div class="base-table-container" ref="tableContainer">
                 <BaseTable
@@ -110,9 +110,10 @@ const [
             },
             defaultRenderer: ({ formItem, formData }) => {
                 return (
-                    <div class="btn-list">
+                    <div class="base-search-operate-list">
                         <el-button
                             type="primary"
+                            plain
                             onClick={() => getDataList()}
                             v-permission={[[`system:user:pageList`]]}
                         >
@@ -167,6 +168,7 @@ const [registerTable, { componentProps: tableProps }] = useTable({
                     <>
                         <el-button
                             type="primary"
+                            link
                             onClick={() => unref(UserContentDialogRef).openDialog('update', row)}
                             v-permission={[[`system:user:update`]]}
                         >
@@ -174,6 +176,7 @@ const [registerTable, { componentProps: tableProps }] = useTable({
                         </el-button>
                         <el-button
                             type="danger"
+                            link
                             onClick={() => deleteData(row)}
                             v-permission={[[`system:user:delete`]]}
                         >
