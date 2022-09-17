@@ -82,12 +82,6 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: 'IconifySelect'
-}
-</script>
-
 <script setup>
 import { computed, nextTick, reactive, ref, unref, useAttrs, useCssModule, watch } from 'vue'
 import { useDisabled, useFormItem } from 'element-plus'
@@ -98,6 +92,10 @@ import * as epIcons from '@iconify-json/ep'
 const epIconList = Object.keys(epIcons.icons.icons).map(
     name => `i-${epIcons.icons.prefix}-${name}`
 )
+
+defineOptions({
+    name: 'IconifySelect'
+})
 
 const tooltipRef = ref(null)
 const scrollbarRef = ref(null)

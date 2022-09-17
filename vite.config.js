@@ -6,6 +6,8 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import DefineOptions from 'unplugin-vue-define-options/vite'
+
 import Unocss from 'unocss/vite'
 import { presetIcons, presetMini } from 'unocss'
 import * as epIcons from '@iconify-json/ep'
@@ -26,6 +28,7 @@ export default defineConfig(({ mode }) => {
             Components({
                 resolvers: [ElementPlusResolver()]
             }),
+            DefineOptions(),
             Unocss({
                 presets: [
                     presetMini(),

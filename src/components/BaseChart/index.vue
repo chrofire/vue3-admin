@@ -2,16 +2,14 @@
     <div class="chart" ref="chartRef" v-bind="attrs"></div>
 </template>
 
-<script>
-export default {
-    name: 'BaseChart',
-    inheritAttrs: false
-}
-</script>
-
 <script setup>
 import { ref, onMounted, useAttrs } from 'vue'
 import { useChart } from './index'
+
+defineOptions({
+    name: 'BaseChart',
+    inheritAttrs: false
+})
 
 const props = defineProps({
     getRawOption: {

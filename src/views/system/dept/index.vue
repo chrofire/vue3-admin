@@ -24,12 +24,6 @@
     </div>
 </template>
 
-<script lang="jsx">
-export default {
-    name: 'Dept'
-}
-</script>
-
 <script lang="jsx" setup>
 import { BaseTable, useTable, BaseForm, useForm } from 'element-plus-components-lib'
 import DeptContentDialog from './DeptContentDialog.vue'
@@ -39,6 +33,10 @@ import { listToTree } from '@/utils/tree'
 import { cloneDeep } from 'lodash-es'
 import { useLoading } from '@/hooks/useLoading'
 import { stateMap } from './constant'
+
+defineOptions({
+    name: 'Dept'
+})
 
 const state = reactive({
     deptList: []

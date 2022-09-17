@@ -29,12 +29,6 @@
     </div>
 </template>
 
-<script lang="jsx">
-export default {
-    name: 'Role'
-}
-</script>
-
 <script lang="jsx" setup>
 import { BaseTable, useTable, BaseForm, useForm, BasePagination } from 'element-plus-components-lib'
 import RoleContentDialog from './RoleContentDialog.vue'
@@ -42,6 +36,10 @@ import { onMounted, ref, unref } from 'vue'
 import api from '@/api'
 import { useLoading } from '@/hooks/useLoading'
 import { stateMap } from './constant'
+
+defineOptions({
+    name: 'Role'
+})
 
 const tableContainer = ref(null)
 const RoleContentDialogRef = ref(null)

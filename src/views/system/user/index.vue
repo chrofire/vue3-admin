@@ -31,12 +31,6 @@
     </div>
 </template>
 
-<script lang="jsx">
-export default {
-    name: 'User'
-}
-</script>
-
 <script lang="jsx" setup>
 import { BaseTable, useTable, BaseForm, useForm, BasePagination } from 'element-plus-components-lib'
 import UserContentDialog from './UserContentDialog.vue'
@@ -46,6 +40,10 @@ import { useLoading } from '@/hooks/useLoading'
 import { stateMap } from './constant'
 import DeptTree from './DeptTree.vue'
 import { listToTree } from '@/utils/tree'
+
+defineOptions({
+    name: 'User'
+})
 
 const tableContainer = ref(null)
 const UserContentDialogRef = ref(null)

@@ -25,13 +25,6 @@
     </div>
 </template>
 
-<script lang="jsx">
-export default {
-    // eslint-disable-next-line vue/no-reserved-component-names
-    name: 'Menu'
-}
-</script>
-
 <script lang="jsx" setup>
 import { BaseTable, useTable, BaseForm, useForm } from 'element-plus-components-lib'
 import MenuContentDialog from './MenuContentDialog.vue'
@@ -41,6 +34,10 @@ import { listToTree } from '@/utils/tree'
 import { cloneDeep } from 'lodash-es'
 import { useLoading } from '@/hooks/useLoading'
 import { booleanMap, stateMap } from './constant'
+
+defineOptions({
+    name: 'Menu'
+})
 
 const state = reactive({
     menuList: []
