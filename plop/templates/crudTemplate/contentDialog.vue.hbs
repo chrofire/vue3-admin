@@ -1,0 +1,133 @@
+<template>
+    <BaseDialog @register="registerDialog" v-bind="dialogProps">
+        <BaseForm @register="registerForm" v-bind="formProps"></BaseForm>
+    </BaseDialog>
+</template>
+
+<script setup>
+import { BaseDialog, useDialog, BaseForm, useForm } from 'element-plus-components-lib'
+import { nextTick, reactive, ref, unref } from 'vue'
+import api from '@/api'
+import { stateMap } from './constant'
+
+const emit = defineEmits(['submit'])
+
+const state = reactive({
+    operationType: null
+})
+
+const [registerDialog, { componentProps: dialogProps, setVisible: setDialogVisible }] = useDialog({
+    title: '标题',
+    confirmProps: {
+        onClick: () => confirmDialog()
+    },
+    cancelProps: {
+        onClick: () => setDialogVisible(false)
+    },
+    onClose () {
+        resetData()
+    }
+})
+
+const [
+    registerForm,
+    { componentProps: formProps, getFormData, setFormData, validate, resetFields }
+] = useForm({
+    labelWidth: '90px',
+    items: [
+        {
+            prop: 'inputField',
+            label: 'input字段',
+            rules: [
+                { required: true, message: 'input字段不能为空', trigger: 'blur' },
+                { min: 3, message: 'input字段长度最短3个字符', trigger: 'blur' },
+                { max: 20, message: 'input字段长度最长20个字符', trigger: 'blur' }
+            ],
+            defaultRenderer: {
+                component: 'input'
+            }
+        },
+        {
+            prop: 'state',
+            label: '状态',
+            rules: [{ required: true, message: '状态不能为空', trigger: 'change' }],
+            defaultRenderer: {
+                component: 'radio-group',
+                props: {
+                    type: 'button',
+                    options: [...stateMap.values()],
+                    optionProps: option => ({
+                        key: option.value,
+                        label: option.value
+                    }),
+                    labelRenderer: (option, rawOption) => rawOption.label
+                }
+            }
+        },
+        {
+            prop: 'remark',
+            label: '备注',
+            defaultRenderer: {
+                component: 'input'
+            }
+        }
+    ],
+    modelValue: {}
+})
+
+const openDialog = async (type, payload) => {
+    state.operationType = type
+    setDialogVisible(true)
+    await nextTick()
+    switch (type) {
+        case 'add':
+            Object.assign(dialogProps, {
+                title: '新增{{moduleCnName}}'
+            })
+            break
+        case 'update':
+            Object.assign(dialogProps, {
+                title: '编辑{{moduleCnName}}'
+            })
+            setFormData({ ...payload })
+            break
+        default:
+            break
+    }
+}
+
+const confirmDialog = async () => {
+    const { valid } = await validate()
+    if (!valid) return
+    try {
+        switch (state.operationType) {
+            case 'add':
+                await api.{{parentApiPath}}{{moduleName}}.addData({ ...getFormData() })
+                ElMessage.success('添加成功')
+                break
+            case 'update':
+                await api.{{parentApiPath}}{{moduleName}}.updateData({ ...getFormData() })
+                ElMessage.success('修改成功')
+                break
+            default:
+                break
+        }
+        emit('submit')
+        setDialogVisible(false)
+    } catch (error) {
+        catchErrorMessage(error)
+    }
+}
+
+const resetData = () => {
+    state.operationType = null
+    resetFields()
+    state.menuTreeList = []
+}
+
+defineExpose({
+    openDialog
+})
+</script>
+
+<style lang="scss" scoped></style>

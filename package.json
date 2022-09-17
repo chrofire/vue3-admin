@@ -30,6 +30,7 @@
         "@vitejs/plugin-vue-jsx": "^2.0.1",
         "eslint": "^8.23.0",
         "eslint-plugin-vue": "^9.4.0",
+        "plop": "^3.1.1",
         "postcss-html": "^1.5.0",
         "postcss-scss": "^4.0.4",
         "rollup-plugin-visualizer": "^5.8.1",

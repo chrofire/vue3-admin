@@ -1,0 +1,36 @@
+import request from '@/utils/request'
+
+{{#if apiTypeMap.addData}}
+// 添加{{moduleCnName}}
+export const addData = params => {
+    return request.post('/{{moduleApiPath}}/add', params).then(res => res.data)
+}
+
+{{/if}}
+{{#if apiTypeMap.deleteData}}
+// 删除{{moduleCnName}}
+export const deleteData = params => {
+    return request.post('/{{moduleApiPath}}/delete', params).then(res => res.data)
+}
+
+{{/if}}
+{{#if apiTypeMap.updateData}}
+// 更新{{moduleCnName}}
+export const updateData = params => {
+    return request.post('/{{moduleApiPath}}/update', params).then(res => res.data)
+}
+
+{{/if}}
+{{#if apiTypeMap.list}}
+// 查询{{moduleCnName}}列表
+export const list = params => {
+    return request.get('/{{moduleApiPath}}/list', { params }).then(res => res.data)
+}
+
+{{/if}}
+{{#if apiTypeMap.pageList}}
+// 分页查询{{moduleCnName}}列表
+export const pageList = params => {
+    return request.get('/{{moduleApiPath}}/pageList', { params }).then(res => res.data)
+}
+{{/if}}
