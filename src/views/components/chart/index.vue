@@ -17,6 +17,10 @@
 import { onMounted, ref } from 'vue'
 import { BaseChart, useChart } from '@/components/BaseChart'
 
+defineOptions({
+    name: 'Chart'
+})
+
 const BaseChartRef = ref(null)
 
 const chartRef = ref(null)

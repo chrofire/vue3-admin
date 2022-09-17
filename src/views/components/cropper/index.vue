@@ -36,6 +36,10 @@
 import { reactive, ref, unref } from 'vue'
 import BaseCropper from '@/components/BaseCropper/index.vue'
 
+defineOptions({
+    name: 'Cropper'
+})
+
 const BaseCropperRef = ref(null)
 
 const state = reactive({

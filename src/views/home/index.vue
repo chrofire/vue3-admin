@@ -21,6 +21,10 @@
 import { onMounted, ref } from 'vue'
 import { BaseChart } from '@/components/BaseChart'
 
+defineOptions({
+    name: 'Home'
+})
+
 const BaseChartRef1 = ref(null)
 const BaseChartRef2 = ref(null)
 const BaseChartRef3 = ref(null)
