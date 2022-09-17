@@ -25,13 +25,12 @@
 </template>
 
 <script lang="jsx" setup>
-import { BaseTable, useTable, BaseForm, useForm } from 'element-plus-components-lib'
+import { BaseTable, useTable, BaseForm, useForm, useLoading } from 'element-plus-components-lib'
 import DeptContentDialog from './DeptContentDialog.vue'
 import { onMounted, reactive, ref, unref } from 'vue'
 import api from '@/api'
 import { listToTree } from '@/utils/tree'
 import { cloneDeep } from 'lodash-es'
-import { useLoading } from '@/hooks/useLoading'
 import { stateMap } from './constant'
 
 defineOptions({

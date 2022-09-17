@@ -32,11 +32,10 @@
 </template>
 
 <script lang="jsx" setup>
-import { BaseTable, useTable, BaseForm, useForm, BasePagination } from 'element-plus-components-lib'
+import { BaseTable, useTable, BaseForm, useForm, BasePagination, useLoading } from 'element-plus-components-lib'
 import UserContentDialog from './UserContentDialog.vue'
 import { onMounted, ref, unref } from 'vue'
 import api from '@/api'
-import { useLoading } from '@/hooks/useLoading'
 import { stateMap } from './constant'
 import DeptTree from './DeptTree.vue'
 import { listToTree } from '@/utils/tree'

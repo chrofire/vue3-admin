@@ -41,8 +41,8 @@
 </template>
 
 <script setup>
+import { useLoading } from 'element-plus-components-lib'
 import { reactive, ref, unref, useAttrs, watch } from 'vue'
-import { useLoading } from '@/hooks/useLoading'
 
 const attrs = useAttrs()
 const emit = defineEmits(['nodeChange'])
