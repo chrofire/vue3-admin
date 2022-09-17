@@ -20,10 +20,10 @@
             <div class="main-layout-content">
                 <router-view v-slot="{ Component, route }">
                     <transition name="el-fade-in-linear" mode="out-in" appear>
-                        <!-- <keep-alive :include="tagBarStore.cacheList">
+                        <keep-alive v-if="isPROD" :include="tagBarStore.cacheList">
                             <component :is="Component" :key="route.fullPath"></component>
-                        </keep-alive> -->
-                        <component :is="Component" :key="route.fullPath"></component>
+                        </keep-alive>
+                        <component v-else :is="Component" :key="route.fullPath"></component>
                     </transition>
                 </router-view>
             </div>
@@ -37,6 +37,8 @@ import TopBar from './TopBar/index.vue'
 import TagBar from './TagBar/index.vue'
 import { useTagBarStore } from '@/stores/tagBar.js'
 import { useSystemStore } from '@/stores/system.js'
+
+const isPROD = import.meta.env.PROD
 
 const tagBarStore = useTagBarStore()
 const systemStore = useSystemStore()

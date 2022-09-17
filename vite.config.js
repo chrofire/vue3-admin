@@ -10,6 +10,9 @@ import Unocss from 'unocss/vite'
 import { presetIcons, presetMini } from 'unocss'
 import * as epIcons from '@iconify-json/ep'
 
+import { visualizer } from 'rollup-plugin-visualizer'
+import viteCompression from 'vite-plugin-compression'
+
 // https://cn.vitejs.dev/config/
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd())
@@ -50,6 +53,10 @@ export default defineConfig(({ mode }) => {
                 safelist: [
                     ...Object.keys(epIcons.icons.icons).map(name => `i-${epIcons.icons.prefix}-${name}`)
                 ]
+            }),
+            viteCompression(),
+            visualizer({
+                filename: 'visualizer.html'
             })
         ],
         resolve: {
@@ -57,6 +64,7 @@ export default defineConfig(({ mode }) => {
                 '@': fileURLToPath(new URL('./src', import.meta.url))
             }
         },
+        base: env.VITE_PUBLIC_PATH,
         server: {
             port: env.VITE_PORT,
             cors: true,
@@ -64,6 +72,18 @@ export default defineConfig(({ mode }) => {
                 [env.VITE_API_baseURL]: {
                     target: env.VITE_PROXY_TARGET,
                     changeOrigin: true
+                }
+            }
+        },
+        build: {
+            rollupOptions: {
+                output: {
+                    // 单独 打包
+                    manualChunks: {
+                        'lodash-es': ['lodash-es'],
+                        echarts: ['echarts'],
+                        'element-plus': ['element-plus']
+                    }
                 }
             }
         }
