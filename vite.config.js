@@ -7,6 +7,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import DefineOptions from 'unplugin-vue-define-options/vite'
+import { createHtmlPlugin } from 'vite-plugin-html'
 
 import Unocss from 'unocss/vite'
 import { presetIcons, presetMini } from 'unocss'
@@ -56,6 +57,14 @@ export default defineConfig(({ mode }) => {
                 safelist: [
                     ...Object.keys(epIcons.icons.icons).map(name => `i-${epIcons.icons.prefix}-${name}`)
                 ]
+            }),
+            createHtmlPlugin({
+                minify: true,
+                inject: {
+                    data: {
+                        title: '管理系统'
+                    }
+                }
             }),
             viteCompression(),
             visualizer({
