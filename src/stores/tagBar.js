@@ -40,6 +40,16 @@ export const useTagBarStore = defineStore('tagBar', {
         },
         deleteCache (tag) {
             this.cacheList = this.cacheList.filter(item => item !== tag.meta.componentName)
+        },
+        reloadTagPage (tag) {
+            this.deleteCache(tag)
+            router.replace({ path: '/redirect' + tag.fullPath })
+        },
+        async closeAllTag () {
+            this.$reset()
+            setTimeout(() => {
+                router.replace({ path: '/redirect' + '/home' })
+            }, 60)
         }
     }
 })

@@ -5,6 +5,7 @@ import pinia from '@/stores'
 import router from '@/router'
 import 'normalize.css'
 import 'uno.css'
+import 'element-plus-components-lib/dist/es/style.css'
 
 const app = createApp(App)
 
